@@ -4,3 +4,8 @@
     {
       "name": "kaminari-dev",
       "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    }
+  ]
+}
