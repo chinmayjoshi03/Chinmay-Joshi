@@ -1,0 +1,81 @@
+/* Kaminari · Thunderclap HUD
+   Black + hazard yellow, mono HUD readouts, one committed dark look. */
+:root {
+  --ink: #0c0b09;
+  --ink-2: #15140f;
+  --ink-3: #1d1b14;
+  --line: #38321f;
+  --volt: #ffd21f;
+  --ember: #ff9f1c;
+  --spark: #eaf6ff;
+  --fg: #f3eedd;
+  --muted: #a59d85;
+  --f-display: "Dela Gothic One";
+  --f-body: "Zen Kaku Gothic New";
+  --f-mono: "JetBrains Mono";
+  --gutter: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+html.is-locked, html.is-locked body { overflow: hidden; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--fg);
+  font-family: var(--f-body), "Hiragino Sans", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(120% 60% at 80% 0%, #2a2410 0%, transparent 55%),
+    linear-gradient(#38321f33 1px, transparent 1px),
+    linear-gradient(90deg, #38321f33 1px, transparent 1px);
+  background-size: auto, 64px 64px, 64px 64px;
+}
+h1, h2, h3 { font-family: var(--f-display), "Arial Black", sans-serif; font-weight: 400; line-height: 1.02; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+a { color: inherit; }
+::selection { background: var(--volt); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--volt); outline-offset: 3px; }
+
+.mono { font-family: var(--f-mono), ui-monospace, Menlo, monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+.muted { color: var(--muted); }
+.wrap { max-width: 1240px; margin: 0 auto; padding-left: var(--gutter); padding-right: var(--gutter-r); }
+
+/* ── buttons ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--f-mono), monospace; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
+  padding: 14px 22px; border: 0; cursor: pointer;
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+.btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+.btn:disabled { opacity: 0.35; cursor: default; transform: none; }
+.btn--volt { background: var(--volt); color: var(--ink); }
+.btn--ghost { background: transparent; color: var(--volt); box-shadow: inset 0 0 0 1.5px var(--volt); clip-path: none; }
+.btn--ink { background: var(--ink); color: var(--volt); }
+.btn--ghost-ink { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); clip-path: none; }
+
+/* ── loader ── */
+.loader {
+  position: fixed; inset: 0; z-index: 100; background: var(--volt); color: var(--ink);
+  display: grid; grid-template-rows: auto 1fr auto auto auto; justify-items: center;
+  padding: max(20px, env(safe-area-inset-top)) var(--gutter-r) max(20px, env(safe-area-inset-bottom)) var(--gutter);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+.loader__top { padding-top: 8px; }
+.loader__center { display: flex; align-items: center; gap: 22px; align-self: center; flex-wrap: wrap; justify-content: center; }
+.loader__logo { width: clamp(90px, 14vw, 140px); height: auto; animation: logo-jolt 1.6s steps(1) infinite; }
+@keyframes logo-jolt { 0%, 86%, 100% { transform: none; } 88% { transform: translate(3px, -2px) skewX(-6deg); } 92% { transform: translate(-2px, 1px); } }
+.loader__line { font-size: 14px; max-width: 18ch; line-height: 1.5; }
+.loader__line b { font-weight: 700; }
+.caret { display: inline-block; width: 9px; height: 1.1em; background: var(--ink); vertical-align: -2px; margin-left: 4px; animation: blink 0.9s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
