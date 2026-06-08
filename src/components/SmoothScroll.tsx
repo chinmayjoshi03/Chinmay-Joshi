@@ -30,3 +30,19 @@ export function SmoothScroll() {
     const onClick = (e: MouseEvent) => {
       const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
       if (!a) return;
+      const id = a.getAttribute("href")!;
+      if (id.length < 2) return;
+      e.preventDefault();
+      lenis.scrollTo(id, { offset: 0 });
+    };
+    document.addEventListener("click", onClick);
+
+    return () => {
+      gsap.ticker.remove(tick);
+      window.removeEventListener("kaminari:ready", unlock);
+      document.removeEventListener("click", onClick);
+      lenis.destroy();
+    };
+  }, []);
+  return null;
+}
