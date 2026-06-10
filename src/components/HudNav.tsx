@@ -24,3 +24,29 @@ export function HudNav() {
 
   const s = sections[active];
 
+  return (
+    <header className="hud-nav">
+      <a href="#hero" className="hud-nav__logo" aria-label="Back to top">
+        雷 <span>KAMINARI</span>
+      </a>
+      <nav className="hud-nav__links mono" aria-label="Sections">
+        {sections.map((sec, i) => (
+          <a key={sec.id} href={`#${sec.id}`} aria-current={i === active ? "true" : undefined}>
+            {sec.kanji}
+          </a>
+        ))}
+      </nav>
+      <div className="hud-nav__right">
+        <span className="hud-nav__count mono">
+          {s.kanji} · {String(active + 1).padStart(2, "0")} / {String(sections.length).padStart(2, "0")} · {s.label}
+        </span>
+        <button type="button" className="sound-toggle mono" aria-pressed={sound} onClick={() => audio.setEnabled(!sound)}>
+          <span className="sound-toggle__bars" aria-hidden="true">
+            <i /><i /><i /><i />
+          </span>
+          {sound ? "Sound on" : "Sound off"}
+        </button>
+      </div>
+    </header>
+  );
+}
