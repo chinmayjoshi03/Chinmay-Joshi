@@ -23,3 +23,28 @@ export function Hero() {
     ];
     gsap.set([name, ...rest], { autoAlpha: 0 });
 
+    const intro = () => {
+      const r = name.getBoundingClientRect();
+      name.style.animation = "none"; // the idle flicker would override the reveal's filter
+      const tl = gsap.timeline();
+      tl.call(() => {
+        // three bolts rake across the name as it is cut in
+        [0.2, 0.5, 0.8].forEach((k, i) =>
+          window.setTimeout(() => {
+            const y = r.top + r.height * k;
+            fx.bolt.emit({ from: { x: r.left - 60, y }, to: { x: r.right + 60, y: y + (Math.random() - 0.5) * 40 }, width: 4, rough: 26, fork: 60 });
+          }, i * 90),
+        );
+        fx.flash.emit(0.55);
+        fx.sfx.emit({ name: "name-reveal", volume: 0.8 });
+      })
+        .fromTo(
+          name,
+          { autoAlpha: 1, clipPath: "inset(0 100% 0 0)", filter: "brightness(2.6) blur(6px)", x: -24 },
+          { clipPath: "inset(0 0% 0 0)", x: 0, duration: 0.6, ease: "expo.inOut" },
+        )
+        .to(name, { filter: "brightness(1) blur(0px)", duration: 0.9, ease: "power2.out" }, "-=0.2")
+        .call(ready, [], "-=0.5")
+        // everything else drifts in, slowly, one after another
+        .fromTo(rest, { autoAlpha: 0, y: 22 }, { autoAlpha: 1, y: 0, duration: 1.3, stagger: 0.24, ease: "power2.out" }, "-=0.3")
+        .add(() => {
