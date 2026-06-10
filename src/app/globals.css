@@ -111,3 +111,19 @@ a { color: inherit; }
 @keyframes eq { 50% { height: 12px; } }
 @media (max-width: 900px) { .hud-nav__links { display: none; } }
 @media (max-width: 560px) { .hud-nav__count { display: none; } }
+
+/* ── fx layers ── */
+.lightning { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 45; }
+.flash { position: fixed; inset: 0; background: var(--spark); opacity: 0; pointer-events: none; z-index: 90; mix-blend-mode: screen; }
+.cursor-glow {
+  position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  background: radial-gradient(260px circle at var(--gx, 50%) var(--gy, 40%), #ffd21f14, transparent 70%);
+}
+main { position: relative; z-index: 2; }
+
+/* ── opening curtain: blank background that Raikō slashes apart ── */
+.intro { position: fixed; inset: 0; z-index: 55; overflow: hidden; }
+.intro__piece { position: absolute; inset: 0; will-change: transform, opacity; filter: drop-shadow(0 0 10px #ffd21faa); }
+.intro__piece-fill {
+  position: absolute; inset: 0; background-color: var(--ink);
+  background-image: linear-gradient(#38321f33 1px, transparent 1px), linear-gradient(90deg, #38321f33 1px, transparent 1px);
