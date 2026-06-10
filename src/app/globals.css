@@ -127,3 +127,19 @@ main { position: relative; z-index: 2; }
 .intro__piece-fill {
   position: absolute; inset: 0; background-color: var(--ink);
   background-image: linear-gradient(#38321f33 1px, transparent 1px), linear-gradient(90deg, #38321f33 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+.intro__seams { position: absolute; inset: 0; pointer-events: none; }
+.intro__seam-glow { stroke: var(--volt); stroke-width: 14; filter: url(#intro-glow); opacity: 0.9; }
+.intro__seam-core { stroke: var(--spark); stroke-width: 2.5; }
+.intro__seam-glow.is-flurry { stroke-width: 7; opacity: 0.75; }
+.intro__seam-core.is-flurry { stroke: #fff2a8; stroke-width: 1.5; }
+.intro__seam-glow.is-finisher { stroke: #ffb21f; stroke-width: 46; opacity: 1; }
+.intro__seam-core.is-finisher { stroke-width: 7; }
+/* during the opening, Raikō and the bolts play above the curtain */
+html.is-intro .stage3d, html.is-intro .raiko { z-index: 60; }
+html.is-intro .lightning { z-index: 58; }
+/* while Raikō is held, nothing on the page gets selected or hovered */
+html.is-dragging, html.is-dragging * { user-select: none; cursor: grabbing !important; }
+
+/* ── WebGL canvas for the 3D Raikō, in front of the page ── */
