@@ -48,3 +48,28 @@ export function Hero() {
         // everything else drifts in, slowly, one after another
         .fromTo(rest, { autoAlpha: 0, y: 22 }, { autoAlpha: 1, y: 0, duration: 1.3, stagger: 0.24, ease: "power2.out" }, "-=0.3")
         .add(() => {
+          gsap.set(name, { clearProps: "clipPath,filter,transform" });
+          name.style.animation = "";
+          gsap.set(rest, { clearProps: "transform" });
+        });
+    };
+    window.addEventListener("kaminari:reveal", intro, { once: true });
+    const st = gsap.to(el.querySelector(".hero__kanji"), {
+      yPercent: 25,
+      ease: "none",
+      scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true },
+    });
+    return () => {
+      window.removeEventListener("kaminari:reveal", intro);
+      st.scrollTrigger?.kill();
+      st.kill();
+    };
+  }, []);
+
+  return (
+    <section id="hero" ref={ref} className="hero">
+      <div className="hero__kanji" aria-hidden="true">雷</div>
+      <div className="wrap hero__content">
+        <p className="mono hero__eyebrow" data-in>
+          Unit // C-01 · Breath: thunder
+        </p>
