@@ -73,3 +73,27 @@ export function Hero() {
         <p className="mono hero__eyebrow" data-in>
           Unit // C-01 · Breath: thunder
         </p>
+        <h1 className="hero__name" data-in>
+          {profile.name}
+        </h1>
+        <p className="mono hero__role" data-in>
+          {"{ "}
+          {profile.role} · {profile.tagline}
+          {" }"}
+        </p>
+        <div className="hero__cta" data-in>
+          <a href="#work" className="btn btn--volt">See missions</a>
+          <a href="#contact" className="btn btn--ghost">Summon me</a>
+        </div>
+      </div>
+      <div className="hud hud--tl mono" aria-hidden="true">
+        System // <b>online</b>
+        <br />
+        Location // <b>{profile.location}</b>
+      </div>
+      <div className="hud hud--br mono" aria-hidden="true">
+        Scroll to awaken ↓
+      </div>
+    </section>
+  );
+}
