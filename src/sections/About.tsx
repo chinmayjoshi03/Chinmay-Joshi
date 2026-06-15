@@ -42,3 +42,46 @@ export function About() {
               <b>{profile.role}</b>
             </div>
             <div className="unit__row mono">
+              <span>Origin</span>
+              <b>{profile.location}</b>
+            </div>
+            <div className="unit__row mono">
+              <span>Status</span>
+              <b className="is-live">● Awake</b>
+            </div>
+            <div className="stats">
+              {profile.stats.map((s) => (
+                <div className="stat" key={s.label}>
+                  <div className="stat__label mono">
+                    <span>{s.label}</span>
+                    <b className="stat__num">{s.value}</b>
+                  </div>
+                  <div className="stat__track">
+                    <span className="stat__fill" style={{ width: `${s.value}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="about__right">
+            <div className="panel bio">
+              {profile.bio.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+            </div>
+            <div className="panel quest">
+              <p className="mono quest__label">Current quest</p>
+              <p className="quest__text">{profile.currentQuest}</p>
+            </div>
+            <div className="panel diag mono" aria-hidden="true">
+              <div><span>Neural link</span><b>Established</b></div>
+              <div><span>Blade</span><b>Sheathed</b></div>
+              <div><span>Sleep debt</span><b>Critical</b></div>
+              <div><span>Signal</span><b>Excellent</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
