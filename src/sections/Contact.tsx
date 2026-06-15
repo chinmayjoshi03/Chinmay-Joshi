@@ -46,3 +46,18 @@ export function Contact() {
         </ul>
       </div>
       <footer className="footer">
+        <div className="marquee mono" aria-hidden="true">
+          <div className="marquee__inner">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <span key={i}>かみなり · KAMINARI · 雷 ·&nbsp;</span>
+            ))}
+          </div>
+        </div>
+        <div className="wrap footer__row mono">
+          <span>© {new Date().getFullYear()} · Built with thunder</span>
+          <span>Mascot: Raikō (original character)</span>
+        </div>
+      </footer>
+    </section>
+  );
+}
