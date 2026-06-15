@@ -20,3 +20,25 @@ export function About() {
     return () => {
       tl.scrollTrigger?.kill();
       tl.kill();
+    };
+  }, []);
+
+  return (
+    <section id="about" ref={ref} className="section about">
+      <div className="wrap">
+        <header className="section__head">
+          <p className="eyebrow mono">弐 · 02 · Character sheet</p>
+          <h2 className="section__title">Who's behind the thunder</h2>
+        </header>
+        <div className="about__grid">
+          <div className="panel unit">
+            <div className="unit__row mono">
+              <span>Unit</span>
+              <b>C-01</b>
+            </div>
+            <div className="unit__name">{profile.name}</div>
+            <div className="unit__row mono">
+              <span>Class</span>
+              <b>{profile.role}</b>
+            </div>
+            <div className="unit__row mono">
