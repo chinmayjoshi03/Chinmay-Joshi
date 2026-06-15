@@ -14,3 +14,19 @@ export function Contact() {
       await navigator.clipboard.writeText(contact.email);
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  return (
+    <section id="contact" className="section contact">
+      <div className="wrap">
+        <p className="eyebrow mono">陸 · 06 · Summon</p>
+        <h2 className="contact__title">
+          Need a developer
+          <br />
+          who moves <em>this fast?</em>
+        </h2>
+        <div className="contact__email">
+          <span className="contact__address">{contact.email}</span>
