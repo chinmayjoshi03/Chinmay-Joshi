@@ -30,3 +30,19 @@ export function Contact() {
         </h2>
         <div className="contact__email">
           <span className="contact__address">{contact.email}</span>
+          <button type="button" className="btn btn--volt" onClick={copy}>
+            {copied ? "Copied ⚡" : "Copy email"}
+          </button>
+        </div>
+        <ul className="contact__links">
+          {contact.links.map((l) => (
+            <li key={l.label}>
+              <a href={l.href} target={l.href.startsWith("http") ? "_blank" : undefined} rel="noreferrer" onClick={bow}>
+                <span>{l.label}</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <footer className="footer">
