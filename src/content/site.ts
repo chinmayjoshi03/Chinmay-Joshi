@@ -58,3 +58,13 @@ export const missions: Mission[] = [
     outcome: "Hybrid CNN + Transformer classifier · HDBSCAN novelty discovery",
     stack: ["Python", "TensorFlow", "Transformers", "React.js"],
     links: [{ label: "Code", href: `${GH}/Genesis` }],
+  },
+  {
+    rank: "S",
+    title: "FinTrace",
+    summary: "Graph-based financial crime detection that spots money-muling networks and suspicious patterns in transaction data.",
+    outcome: "Graph analysis of transaction networks · live demo",
+    stack: ["Python", "Node.js", "React"],
+    links: [
+      { label: "Live", href: "https://fintrace-eight.vercel.app" },
+      { label: "Code", href: `${GH}/Rift` },
