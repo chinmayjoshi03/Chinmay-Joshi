@@ -68,3 +68,14 @@ export const missions: Mission[] = [
     links: [
       { label: "Live", href: "https://fintrace-eight.vercel.app" },
       { label: "Code", href: `${GH}/Rift` },
+    ],
+  },
+  {
+    rank: "A",
+    title: "Detoxify",
+    summary: "Google Solution Challenge app for addiction recovery, with Gemini-generated recovery plans, streaks, mood tracking and community support.",
+    outcome: "5+ AI workflows · 6+ tracking features",
+    stack: ["Flutter", "Gemini API", "Firebase", "Node.js"],
+    links: [{ label: "Code", href: `${GH}/detoxify` }],
+  },
+  {
