@@ -79,3 +79,13 @@ export const missions: Mission[] = [
     links: [{ label: "Code", href: `${GH}/detoxify` }],
   },
   {
+    rank: "A",
+    title: "AI 2D Video Generator",
+    summary: "Turns a prompt into an animated 2D explainer video: Gemini writes the scene code, Manim renders it, and a job queue handles the work.",
+    outcome: "Prompt → rendered video pipeline with queued jobs",
+    stack: ["Gemini", "Manim", "Node.js", "Redis / BullMQ", "React"],
+    links: [{ label: "Code", href: `${GH}/2DVideoGenerator` }],
+  },
+  {
+    rank: "A",
+    title: "Scribble",
