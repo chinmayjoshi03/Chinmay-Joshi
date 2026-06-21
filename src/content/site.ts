@@ -89,3 +89,14 @@ export const missions: Mission[] = [
   {
     rank: "A",
     title: "Scribble",
+    summary: "Real-time multiplayer drawing and guessing game for mobile with rooms, turns, scoring and a synced live canvas.",
+    outcome: "Low-latency canvas sync across devices",
+    stack: ["React Native", "Socket.IO", "Express.js"],
+    links: [{ label: "Code", href: `${GH}/Scribble-Mobile-App` }],
+  },
+  {
+    rank: "A",
+    title: "Self-Healing Service",
+    summary: "A Go worker pool that catches crashes, restarts its own workers and retries failed tasks, with a live health dashboard.",
+    outcome: "Panic recovery · supervisor restarts · exponential backoff",
+    stack: ["Go", "Goroutines", "HTTP"],
