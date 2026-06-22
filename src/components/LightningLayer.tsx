@@ -42,3 +42,24 @@ export function LightningLayer() {
       cv.width = W * d;
       cv.height = H * d;
       ctx.setTransform(d, 0, 0, d, 0, 0);
+    };
+    size();
+    window.addEventListener("resize", size);
+
+    const addBolt = ({ from, to, width = 4, rough = 40, fork = 120 }: BoltRequest) => {
+      const pts = jag(from, to, rough);
+      const branches: [number, number][][] = [];
+      for (let i = 3; i < pts.length - 3; i += 4) {
+        if (Math.random() < 0.5) continue;
+        const [bx, by] = pts[i];
+        branches.push(jag({ x: bx, y: by }, { x: bx + (Math.random() - 0.5) * fork, y: by + fork * (0.33 + Math.random() * 0.5) }, rough * 0.5, 6));
+      }
+      bolts.push({ pts, branches, life: 1, width });
+    };
+
+    const stroke = (pts: [number, number][], w: number, alpha: number) => {
+      ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+      ctx.shadowColor = "#ffd21f";
+      ctx.shadowBlur = 22;
