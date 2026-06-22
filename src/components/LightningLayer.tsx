@@ -20,3 +20,25 @@ function jag(from: { x: number; y: number }, to: { x: number; y: number }, rough
   pts.push([to.x, to.y]);
   return pts;
 }
+
+export function LightningLayer() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const flashRef = useRef<HTMLDivElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const cv = canvasRef.current!;
+    const ctx = cv.getContext("2d")!;
+    const reduce = prefersReducedMotion();
+    let W = 0;
+    let H = 0;
+    let bolts: Bolt[] = [];
+    let raf = 0;
+
+    const size = () => {
+      const d = Math.min(window.devicePixelRatio || 1, 2);
+      W = window.innerWidth;
+      H = window.innerHeight;
+      cv.width = W * d;
+      cv.height = H * d;
+      ctx.setTransform(d, 0, 0, d, 0, 0);
