@@ -114,3 +114,32 @@ export function LightningLayer() {
         const y = y0 + h * (0.2 + Math.random() * 0.6);
         addBolt({ from: { x: x0, y }, to: { x: x0 + w, y: y + (Math.random() - 0.5) * 30 }, width: 2.2, rough: 22 });
         return;
+      }
+      const per = 2 * (w + h);
+      const at = (d: number) => {
+        d = ((d % per) + per) % per;
+        if (d < w) return { x: x0 + d, y: y0 };
+        if (d < w + h) return { x: x0 + w, y: y0 + d - w };
+        if (d < 2 * w + h) return { x: x0 + w - (d - w - h), y: y0 + h };
+        return { x: x0, y: y0 + h - (d - 2 * w - h) };
+      };
+      const d = Math.random() * per;
+      addBolt({ from: at(d), to: at(d + 70 + Math.random() * 190), width: 2.2, rough: 13, fork: 22 });
+    };
+    raf = requestAnimationFrame(draw);
+
+    const offBolt = fx.bolt.on(addBolt);
+    const offFlash = fx.flash.on((v) => {
+      if (reduce) return;
+      flashRef.current?.animate([{ opacity: v }, { opacity: 0 }], { duration: 280, easing: "ease-out" });
+    });
+    const offShake = fx.shake.on((px) => {
+      if (reduce) return;
+      const root = document.getElementById("shake-root");
+      root?.animate(
+        [
+          { transform: "translate(0,0)" },
+          { transform: `translate(${px}px,${-px / 2}px)` },
+          { transform: `translate(${-px}px,${px / 2}px)` },
+          { transform: "translate(0,0)" },
+        ],
