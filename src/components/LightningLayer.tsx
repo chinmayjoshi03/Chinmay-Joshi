@@ -85,3 +85,32 @@ export function LightningLayer() {
       // ambient sky bolts near the top of the screen
       if (!reduce && !document.hidden && Math.random() < 0.0025) {
         const x = W * (0.3 + Math.random() * 0.65);
+        addBolt({ from: { x, y: -10 }, to: { x: x + (Math.random() - 0.5) * 160, y: H * (0.18 + Math.random() * 0.25) }, width: 2.5, rough: 60 });
+      }
+      if (!reduce && !document.hidden && !document.documentElement.classList.contains("is-intro")) chargeName();
+      raf = requestAnimationFrame(draw);
+    };
+
+    // short arcs hop along the edges of each line of the hero name, now and then one runs through it
+    let nameAt = 0;
+    let nameEl: HTMLElement | null = null;
+    const chargeName = () => {
+      const now = performance.now();
+      if (now < nameAt) return;
+      nameAt = now + 140 + Math.random() * 450;
+      nameEl ??= document.querySelector<HTMLElement>(".hero__name");
+      if (!nameEl) return;
+      const range = document.createRange();
+      range.selectNodeContents(nameEl);
+      const lines = Array.from(range.getClientRects()).filter((r) => r.width > 40 && r.top > 60 && r.bottom < H);
+      if (!lines.length) return;
+      const r = lines[Math.floor(Math.random() * lines.length)];
+      const trim = r.height * 0.11; // display type has tall line boxes
+      const x0 = r.left - 2;
+      const y0 = r.top + trim - 2;
+      const w = r.width + 4;
+      const h = r.height - trim * 2 + 4;
+      if (Math.random() < 0.12) {
+        const y = y0 + h * (0.2 + Math.random() * 0.6);
+        addBolt({ from: { x: x0, y }, to: { x: x0 + w, y: y + (Math.random() - 0.5) * 30 }, width: 2.2, rough: 22 });
+        return;
