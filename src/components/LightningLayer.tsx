@@ -63,3 +63,25 @@ export function LightningLayer() {
       pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
       ctx.shadowColor = "#ffd21f";
       ctx.shadowBlur = 22;
+      ctx.strokeStyle = "#ffd21f";
+      ctx.lineWidth = w;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = "#eaf6ff";
+      ctx.lineWidth = w / 2.6;
+      ctx.stroke();
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+      ctx.lineJoin = "miter";
+      for (const b of bolts) {
+        stroke(b.pts, b.width, b.life);
+        b.branches.forEach((br) => stroke(br, b.width * 0.45, b.life * 0.8));
+        b.life -= 0.045;
+      }
+      ctx.globalAlpha = 1;
+      bolts = bolts.filter((b) => b.life > 0);
+      // ambient sky bolts near the top of the screen
+      if (!reduce && !document.hidden && Math.random() < 0.0025) {
+        const x = W * (0.3 + Math.random() * 0.65);
