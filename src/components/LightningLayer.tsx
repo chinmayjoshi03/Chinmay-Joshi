@@ -143,3 +143,31 @@ export function LightningLayer() {
           { transform: `translate(${-px}px,${px / 2}px)` },
           { transform: "translate(0,0)" },
         ],
+        { duration: 220 },
+      );
+    });
+
+    const onMove = (e: PointerEvent) => {
+      glowRef.current?.style.setProperty("--gx", `${e.clientX}px`);
+      glowRef.current?.style.setProperty("--gy", `${e.clientY}px`);
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", size);
+      window.removeEventListener("pointermove", onMove);
+      offBolt();
+      offFlash();
+      offShake();
+    };
+  }, []);
+
+  return (
+    <>
+      <div ref={glowRef} className="cursor-glow" aria-hidden="true" />
+      <canvas ref={canvasRef} className="lightning" aria-hidden="true" />
+      <div ref={flashRef} className="flash" aria-hidden="true" />
+    </>
+  );
+}
