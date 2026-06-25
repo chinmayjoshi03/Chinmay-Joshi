@@ -42,3 +42,47 @@ export function Loader() {
     fx.flash.emit(0.9);
     fx.bolt.emit({ from: { x: window.innerWidth * 0.5, y: 0 }, to: { x: window.innerWidth * 0.45, y: window.innerHeight }, width: 8, rough: 80 });
     if (!el || prefersReducedMotion()) return done();
+    gsap.to(el, {
+      clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
+      duration: 0.7,
+      ease: "expo.inOut",
+      onComplete: done,
+    });
+  };
+
+  if (gone) return null;
+
+  const saved = typeof window !== "undefined" ? audio.savedChoice() : null;
+
+  return (
+    <div ref={rootRef} className="loader" role="dialog" aria-modal="true" aria-label="Loading">
+      <div className="loader__top mono">Preparing system // ({pct}%)</div>
+      <div className="loader__center">
+        <svg className="loader__logo" viewBox="0 0 120 120" aria-hidden="true">
+          <polygon points="66,4 22,66 54,66 40,116 98,46 64,46 82,4" fill="#0c0b09" />
+        </svg>
+        <div className="loader__line mono">
+          {typed}
+          {typed.length >= LINE.length && "… "}
+          <b>{pct}%</b>
+          <span className="caret" />
+        </div>
+      </div>
+      <div className={`loader__choose ${ready ? "is-ready" : ""}`}>
+        <button type="button" className="btn btn--ink" onClick={() => enter(true)} disabled={!ready} autoFocus={ready && saved !== false}>
+          ⚡ Enter with sound
+        </button>
+        <button type="button" className="btn btn--ghost-ink" onClick={() => enter(false)} disabled={!ready}>
+          Enter silent
+        </button>
+      </div>
+      <div className="loader__bar">
+        <span style={{ transform: `scaleX(${pct / 100})` }} />
+      </div>
+      <div className="loader__foot mono">
+        <span>かみなり</span>
+        <span>ready_for_(thunder)</span>
+      </div>
+    </div>
+  );
+}
