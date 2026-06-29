@@ -21,3 +21,15 @@ const POSE_ID: Record<MoveName, string> = {
 
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
+type Props = { onPoseChange?: (pose: MoveName) => void };
+
+export const Raiko2D = forwardRef<CharacterSlot, Props>(function Raiko2D({ onPoseChange }, ref) {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const flipRef = useRef<HTMLDivElement>(null);
+  const useRefEl = useRef<SVGUseElement>(null);
+  const ghostRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const pos = useRef<Point>({ x: -999, y: -999 });
+  const state = useRef<MoveName>("sleep");
+  const facing = useRef<1 | -1>(1);
+
+  const size = () => {
