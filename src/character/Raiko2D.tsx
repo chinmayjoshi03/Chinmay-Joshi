@@ -33,3 +33,14 @@ export const Raiko2D = forwardRef<CharacterSlot, Props>(function Raiko2D({ onPos
   const facing = useRef<1 | -1>(1);
 
   const size = () => {
+    const el = rootRef.current;
+    return el ? { w: el.offsetWidth, h: el.offsetHeight } : { w: 200, h: 140 };
+  };
+
+  const apply = () => {
+    const el = rootRef.current;
+    if (!el) return;
+    const { w, h } = size();
+    el.style.transform = `translate3d(${pos.current.x - w / 2}px, ${pos.current.y - h}px, 0)`;
+  };
+
