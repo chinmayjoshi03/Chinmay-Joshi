@@ -44,3 +44,14 @@ export const Raiko2D = forwardRef<CharacterSlot, Props>(function Raiko2D({ onPos
     el.style.transform = `translate3d(${pos.current.x - w / 2}px, ${pos.current.y - h}px, 0)`;
   };
 
+  const setPose = (p: MoveName) => {
+    state.current = p;
+    useRefEl.current?.setAttribute("href", POSE_ID[p]);
+    rootRef.current?.setAttribute("data-pose", p);
+    onPoseChange?.(p);
+  };
+
+  const face = (dir: 1 | -1) => {
+    facing.current = dir;
+    if (flipRef.current) flipRef.current.style.transform = `scaleX(${dir})`;
+  };
