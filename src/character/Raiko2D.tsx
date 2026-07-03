@@ -55,3 +55,60 @@ export const Raiko2D = forwardRef<CharacterSlot, Props>(function Raiko2D({ onPos
     facing.current = dir;
     if (flipRef.current) flipRef.current.style.transform = `scaleX(${dir})`;
   };
+
+  useImperativeHandle(
+    ref,
+    (): CharacterSlot => ({
+      get state() {
+        return state.current;
+      },
+      get position() {
+        return { ...pos.current };
+      },
+
+      place(at: Point) {
+        gsap.killTweensOf(pos.current);
+        pos.current = { ...at };
+        apply();
+      },
+
+      sleep() {
+        setPose("sleep");
+      },
+
+      async ready() {
+        setPose("ready");
+        if (!prefersReducedMotion() && flipRef.current) {
+          gsap.fromTo(flipRef.current, { y: -10 }, { y: 0, duration: MOVE_MS.ready / 1000, ease: "back.out(3)" });
+        }
+        await wait(MOVE_MS.ready);
+      },
+
+      async strike(to: Point) {
+        const reduce = prefersReducedMotion();
+        const from = { ...pos.current };
+        face(to.x >= from.x ? 1 : -1);
+        setPose("strike");
+        const { h } = size();
+        const chest = h * 0.35;
+        fx.flash.emit(0.75);
+        fx.bolt.emit({ from: { x: from.x, y: from.y - chest }, to: { x: to.x, y: to.y - chest }, width: 6, rough: 46 });
+        fx.thunder.emit(1);
+        fx.shake.emit(6);
+
+        // afterimages along the path
+        ghostRefs.current.forEach((g, i) => {
+          if (!g || reduce) return;
+          const t = 0.25 + i * 0.22;
+          const gx = from.x + (to.x - from.x) * t;
+          const gy = from.y + (to.y - from.y) * t;
+          const { w } = size();
+          g.style.transform = `translate3d(${gx - w / 2}px, ${gy - h}px, 0) scaleX(${facing.current})`;
+          gsap.fromTo(g, { opacity: 0.6 - i * 0.15 }, { opacity: 0, duration: 0.7, delay: 0.04 + i * 0.04, ease: "power2.out" });
+        });
+
+        await new Promise<void>((resolve) => {
+          gsap.to(pos.current, {
+            x: to.x,
+            y: to.y,
+            duration: reduce ? 0.001 : MOVE_MS.strike / 1000,
