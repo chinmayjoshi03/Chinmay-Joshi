@@ -136,3 +136,27 @@ export const Raiko2D = forwardRef<CharacterSlot, Props>(function Raiko2D({ onPos
           gsap.fromTo(flipRef.current, { rotate: -6 }, { rotate: 0, duration: MOVE_MS.bow / 1000, ease: "power2.out" });
         }
         await wait(MOVE_MS.bow);
+      },
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  return (
+    <>
+      {[0, 1, 2].map((i) => (
+        <div key={i} ref={(el) => { ghostRefs.current[i] = el; }} className="raiko raiko--ghost" aria-hidden="true">
+          <svg viewBox="0 0 200 140"><use href="#raiko-strike" /></svg>
+        </div>
+      ))}
+      <div ref={rootRef} className="raiko" data-pose="sleep" role="img" aria-label="Raikō, the site's thunder swordsman mascot">
+        <span className="raiko__zz" aria-hidden="true">Z z</span>
+        <div ref={flipRef} className="raiko__flip">
+          <svg viewBox="0 0 200 140">
+            <use ref={useRefEl} href="#raiko-sleep" />
+          </svg>
+        </div>
+      </div>
+    </>
+  );
+});
