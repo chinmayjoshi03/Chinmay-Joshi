@@ -112,3 +112,27 @@ export const Raiko2D = forwardRef<CharacterSlot, Props>(function Raiko2D({ onPos
             x: to.x,
             y: to.y,
             duration: reduce ? 0.001 : MOVE_MS.strike / 1000,
+            ease: "expo.inOut",
+            onUpdate: apply,
+            onComplete: resolve,
+          });
+        });
+      },
+
+      async land() {
+        setPose("land");
+        await wait(MOVE_MS.land);
+      },
+
+      look(at: Point) {
+        if (state.current === "strike" || state.current === "bow") return;
+        face(at.x >= pos.current.x ? 1 : -1);
+        setPose("look");
+      },
+
+      async bow() {
+        setPose("bow");
+        if (!prefersReducedMotion() && flipRef.current) {
+          gsap.fromTo(flipRef.current, { rotate: -6 }, { rotate: 0, duration: MOVE_MS.bow / 1000, ease: "power2.out" });
+        }
+        await wait(MOVE_MS.bow);
