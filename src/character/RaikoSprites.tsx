@@ -20,3 +20,24 @@ export function RaikoSprites() {
         <linearGradient id="rk-blade" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#ffffff" />
           <stop offset="1" stopColor="#bfe3ff" />
+        </linearGradient>
+        <filter id="rk-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="2" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        <polygon id="rk-zap" points="0,0 10,-2 4,12 14,10 -2,36 4,16 -6,18" fill="#fff2a8" stroke="#111" strokeWidth="2.2" />
+
+        <g id="rk-eye">
+          <ellipse cx="0" cy="2" rx="6.4" ry="8.2" fill="#fff" />
+          <ellipse cx=".6" cy="2.8" rx="5.4" ry="7.4" fill="url(#rk-iris)" />
+          <ellipse cx=".8" cy="3.6" rx="2.4" ry="3.6" fill="#0b1a2e" />
+          <circle cx="-1.8" cy="-1.4" r="2.1" fill="#fff" />
+          <circle cx="2.6" cy="6.2" r="1" fill="#fff" />
+          <path d="M-8.4 -5 Q0 -10.5 8.4 -5" fill="none" stroke="#111" strokeWidth="3" strokeLinecap="round" />
+        </g>
+
+        {/* head parts: face centre 0,0, chin y≈31 */}
