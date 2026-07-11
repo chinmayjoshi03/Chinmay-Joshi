@@ -62,3 +62,24 @@ export function RaikoSprites() {
           <polyline points="26,31 23,36 27,36 24,42" fill="none" stroke="#ffd21f" strokeWidth="1.8" />
         </g>
         <g id="rk-face-sleep">
+          <path d="M-17 6 Q-10 11 -3 6 M3 6 Q10 11 17 6" stroke="#111" strokeWidth="2.8" fill="none" strokeLinecap="round" />
+          <path d="M-15 -4 L-5 -2 M15 -4 L5 -2" stroke="#b08a10" strokeWidth="2" strokeLinecap="round" />
+          <ellipse cx="0" cy="20" rx="2.6" ry="2" fill="#7a2a20" stroke="#111" strokeWidth="1.2" />
+        </g>
+        <g id="rk-face-focus">
+          <g transform="translate(-10 4)"><use href="#rk-eye" /></g>
+          <g transform="translate(10 4) scale(-1 1)"><use href="#rk-eye" /></g>
+          <path d="M-17 -10 L-3 -4 M17 -10 L3 -4" stroke="#111" strokeWidth="2.8" strokeLinecap="round" />
+          <path d="M-4 21 h8" stroke="#111" strokeWidth="2" />
+        </g>
+
+        {/* ── poses ── */}
+        <g id="raiko-sleep">
+          <path d="M60 132 C60 112 78 100 100 100 C122 100 140 112 140 132Z" fill="url(#rk-storm)" stroke="#111" strokeWidth="2.2" />
+          <path d="M86 102 L114 102 L112 128 L88 128Z" fill="#23232c" stroke="#111" strokeWidth="2" />
+          <line x1="50" y1="124" x2="156" y2="116" stroke="#2c2c34" strokeWidth="7" strokeLinecap="round" />
+          <line x1="140" y1="117" x2="160" y2="115" stroke="#f3eedd" strokeWidth="5" strokeLinecap="round" />
+          <g transform="translate(100 58)">
+            <use href="#rk-hair-back" /><use href="#rk-face" /><use href="#rk-face-sleep" />
+            <ellipse className="rk-drool" cx="9" cy="27" rx="3" ry="4" fill="#bfe3ff" stroke="#111" strokeWidth="1" />
+            <use href="#rk-hair" /><use href="#rk-phones" />
