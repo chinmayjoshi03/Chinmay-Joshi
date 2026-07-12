@@ -83,3 +83,45 @@ export function RaikoSprites() {
             <use href="#rk-hair-back" /><use href="#rk-face" /><use href="#rk-face-sleep" />
             <ellipse className="rk-drool" cx="9" cy="27" rx="3" ry="4" fill="#bfe3ff" stroke="#111" strokeWidth="1" />
             <use href="#rk-hair" /><use href="#rk-phones" />
+          </g>
+        </g>
+
+        <g id="raiko-ready">
+          <path d="M84 104 C70 112 62 124 60 136 L90 136 L100 120 L110 136 L140 136 C138 124 130 112 116 104Z" fill="#23232c" stroke="#111" strokeWidth="2.2" />
+          <path d="M86 84 C64 90 50 104 44 122 L84 118 L92 100Z" fill="url(#rk-storm)" stroke="#111" strokeWidth="2.2" />
+          <path d="M114 84 C136 90 150 104 156 122 L116 118 L108 100Z" fill="url(#rk-storm)" stroke="#111" strokeWidth="2.2" />
+          <path d="M88 84 L112 84 L114 110 L86 110Z" fill="#23232c" stroke="#111" strokeWidth="2" />
+          <line x1="110" y1="108" x2="160" y2="128" stroke="#2c2c34" strokeWidth="6" strokeLinecap="round" />
+          <line x1="110" y1="108" x2="94" y2="98" stroke="#f3eedd" strokeWidth="5" strokeLinecap="round" />
+          <path d="M92 92 q6 -4 10 2 q1 7 -6 7 q-7 -1 -4 -9Z" fill="#fde3cc" stroke="#111" strokeWidth="1.6" />
+          <g transform="translate(100 46) scale(.95)">
+            <use href="#rk-hair-back" /><use href="#rk-face" /><use href="#rk-face-focus" /><use href="#rk-hair" />
+          </g>
+        </g>
+
+        <g id="raiko-strike">
+          <g stroke="#2c3a63" strokeWidth="1.4" opacity=".5">
+            <line x1="0" y1="70" x2="60" y2="70" /><line x1="8" y1="84" x2="80" y2="84" />
+            <line x1="0" y1="100" x2="56" y2="100" /><line x1="16" y1="114" x2="90" y2="114" />
+          </g>
+          <path d="M128 88 C96 88 64 94 26 108 L52 112 L30 124 L82 116 L124 110Z" fill="url(#rk-storm)" stroke="#111" strokeWidth="2.2" />
+          <path d="M110 108 C100 118 88 126 70 130 L80 138 C98 134 112 126 120 116Z" fill="#23232c" stroke="#111" strokeWidth="2" />
+          <path d="M124 108 C134 118 146 126 166 128 L162 138 C142 136 130 126 118 116Z" fill="#23232c" stroke="#111" strokeWidth="2" />
+          <line x1="132" y1="100" x2="198" y2="92" stroke="url(#rk-blade)" strokeWidth="4" strokeLinecap="round" filter="url(#rk-glow)" />
+          <line x1="132" y1="100" x2="198" y2="92" stroke="#111" strokeWidth=".8" />
+          <polyline points="150,84 160,92 166,84 178,94 186,86" fill="none" stroke="#e0b020" strokeWidth="2" />
+          <g transform="translate(140 52) scale(.9) rotate(14)">
+            <use href="#rk-hair-back" /><use href="#rk-face" />
+            <g transform="translate(10 4) scale(-1 1)"><use href="#rk-eye" /></g>
+            <path d="M-17 4 Q-10 8 -3 4" stroke="#111" strokeWidth="2.6" fill="none" />
+            <path d="M3 -10 L17 -4" stroke="#111" strokeWidth="2.8" />
+            <use href="#rk-hair" />
+          </g>
+        </g>
+
+        <g id="raiko-land">
+          <path d="M84 104 C66 114 58 126 56 136 L88 136 L100 122 L112 136 L144 136 C142 126 134 114 116 104Z" fill="#23232c" stroke="#111" strokeWidth="2.2" />
+          <path d="M86 84 C66 92 56 108 54 124 L90 118Z" fill="url(#rk-storm)" stroke="#111" strokeWidth="2.2" />
+          <path d="M114 84 C134 90 146 106 150 122 L112 118Z" fill="url(#rk-storm)" stroke="#111" strokeWidth="2.2" />
+          <path d="M88 84 L112 84 L114 110 L86 110Z" fill="#23232c" stroke="#111" strokeWidth="2" />
+          <path d="M112 90 L136 70" stroke="#2c3a63" strokeWidth="8" strokeLinecap="round" />
