@@ -125,3 +125,45 @@ export function RaikoSprites() {
           <path d="M114 84 C134 90 146 106 150 122 L112 118Z" fill="url(#rk-storm)" stroke="#111" strokeWidth="2.2" />
           <path d="M88 84 L112 84 L114 110 L86 110Z" fill="#23232c" stroke="#111" strokeWidth="2" />
           <path d="M112 90 L136 70" stroke="#2c3a63" strokeWidth="8" strokeLinecap="round" />
+          <line x1="136" y1="70" x2="190" y2="20" stroke="url(#rk-blade)" strokeWidth="4" strokeLinecap="round" filter="url(#rk-glow)" />
+          <line x1="136" y1="70" x2="190" y2="20" stroke="#111" strokeWidth=".8" />
+          <path d="M190 20 C150 50 80 60 20 40" fill="none" stroke="#e0b020" strokeWidth="2" opacity=".7" />
+          <g transform="translate(98 48) scale(.95)">
+            <use href="#rk-hair-back" /><use href="#rk-face" /><use href="#rk-face-focus" /><use href="#rk-hair" />
+          </g>
+        </g>
+
+        <g id="raiko-look">
+          <path d="M86 108 L114 108 L118 136 L82 136Z" fill="#23232c" stroke="#111" strokeWidth="2" />
+          <path d="M82 84 L118 84 L124 118 L76 118Z" fill="url(#rk-storm)" stroke="#111" strokeWidth="2.2" />
+          <path d="M92 86 L108 86 L108 112 L92 112Z" fill="#23232c" stroke="#111" strokeWidth="2" />
+          <path d="M118 90 L132 62" stroke="#2c3a63" strokeWidth="8" strokeLinecap="round" />
+          <circle cx="132" cy="58" r="5" fill="#fde3cc" stroke="#111" strokeWidth="1.6" />
+          <g transform="translate(100 46) scale(.95)">
+            <use href="#rk-hair-back" /><use href="#rk-face" />
+            {/* shy smile: happy closed eyes, deep blush, small smile */}
+            <ellipse cx="-15" cy="14" rx="6" ry="3.4" fill="#ff7a86" opacity=".55" />
+            <ellipse cx="15" cy="14" rx="6" ry="3.4" fill="#ff7a86" opacity=".55" />
+            <path d="M-18 13 l2 -4 M-14 13 l2 -4 M12 13 l2 -4 M16 13 l2 -4" stroke="#d94a5c" strokeWidth="1" />
+            <path d="M-16 7 Q-10 1 -4 7 M4 7 Q10 1 16 7" stroke="#111" strokeWidth="2.6" fill="none" strokeLinecap="round" />
+            <path d="M-4 19 Q0 23 4 19" stroke="#111" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+            <use href="#rk-hair" /><use href="#rk-phones" />
+          </g>
+          <text x="150" y="40" fontFamily="var(--f-display), sans-serif" fontSize="15" fill="#ffd21f" stroke="#111" strokeWidth=".6">hi!</text>
+        </g>
+
+        <g id="raiko-bow">
+          <path d="M84 112 L112 112 L116 136 L80 136Z" fill="#23232c" stroke="#111" strokeWidth="2" />
+          <path d="M80 114 L116 114 L140 82 L104 72Z" fill="url(#rk-storm)" stroke="#111" strokeWidth="2.2" />
+          <line x1="88" y1="116" x2="60" y2="134" stroke="#2c2c34" strokeWidth="6" strokeLinecap="round" />
+          <g transform="translate(140 74) scale(.85) rotate(48)">
+            <use href="#rk-hair-back" /><use href="#rk-face" />
+            <path d="M-17 7 Q-10 0 -3 7 M3 7 Q10 0 17 7" stroke="#111" strokeWidth="2.8" fill="none" />
+            <path d="M-5 18 Q0 25 5 18Z" fill="#7a2a20" stroke="#111" strokeWidth="1.4" />
+            <use href="#rk-hair" />
+          </g>
+        </g>
+      </defs>
+    </svg>
+  );
+}
