@@ -68,3 +68,37 @@ export const RAGE_POSE: Pose = {
 export type Rig = {
   root: THREE.Group;
   /** Live joint values. Tween these, then call update(). */
+  pose: Pose;
+  /** Extra head rotation for cursor tracking. */
+  look: { yaw: number; pitch: number };
+  facing: 1 | -1;
+  setFace(kind: FaceKind): void;
+  setSword(inHand: boolean): void;
+  /** Applies the pose plus breathing, blinking and cloth sway. */
+  update(t: number, sleeping?: boolean): void;
+  /** Only on ghost rigs: the single additive material, for fading. */
+  ghost?: THREE.MeshBasicMaterial;
+};
+
+export function buildRaiko(opts: { ghost?: boolean } = {}): Rig {
+  const isGhost = !!opts.ghost;
+  const ghost = isGhost
+    ? new THREE.MeshBasicMaterial({ color: COLORS.volt, ...GLOW, opacity: 0 })
+    : undefined;
+  const pick = <T extends THREE.Material>(m: T) => (ghost ?? m) as THREE.Material;
+
+  const cloth = isGhost ? null : haoriTexture();
+  if (cloth) cloth.repeat.set(3, 1.5);
+  const sleeveCloth = cloth?.clone() ?? null;
+  if (sleeveCloth) sleeveCloth.repeat.set(2, 1);
+
+  const M = {
+    skin: pick(toon(COLORS.skin)),
+    hair: pick(toon(COLORS.hair)),
+    belt: pick(toon(0x5d5870)),
+    metal: pick(toon(0xc9ccd6)),
+    sole: pick(toon(0x2a2420)),
+    grip: pick(toon(0xffffff, { map: isGhost ? null : gripTexture() })),
+    haori: pick(toon(0xffffff, { map: cloth, side: THREE.DoubleSide })),
+    sleeve: pick(toon(0xffffff, { map: sleeveCloth })),
+    uniform: pick(toon(COLORS.uniform)),
