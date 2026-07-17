@@ -137,3 +137,38 @@ export function buildRaiko(opts: { ghost?: boolean } = {}): Rig {
   collar.position.y = 0.56;
   hips.add(collar);
   const belt = part(new THREE.CylinderGeometry(0.315, 0.325, 0.13, 20), M.belt, 0.02);
+  belt.position.y = 0.06;
+  hips.add(belt);
+  const buckle = part(new THREE.BoxGeometry(0.15, 0.1, 0.04), M.metal, 0.012);
+  buckle.position.set(0, 0.06, 0.33);
+  hips.add(buckle);
+
+  // ── haori (open at the front, pivots at the shoulders so it can stream behind) ──
+  const coat = group(hips, 0, 0.56, 0);
+  const coatGeo = new THREE.CylinderGeometry(0.31, 0.56, 1.02, 40, 6, true, 0.5, Math.PI * 2 - 1.0);
+  {
+    // soft vertical folds that deepen toward the hem
+    const p = coatGeo.attributes.position as THREE.BufferAttribute;
+    for (let i = 0; i < p.count; i++) {
+      const x = p.getX(i);
+      const z = p.getZ(i);
+      const down = (0.51 - p.getY(i)) / 1.02;
+      const k = 1 + Math.sin(Math.atan2(x, z) * 9) * 0.06 * down;
+      p.setX(i, x * k);
+      p.setZ(i, z * k);
+    }
+    coatGeo.computeVertexNormals();
+  }
+  const coatMesh = part(coatGeo, M.haori, 0.024);
+  coatMesh.position.y = -0.47;
+  coat.add(coatMesh);
+
+  // ── legs ──
+  const makeLeg = (side: 1 | -1) => {
+    const leg = group(hips, 0.15 * side, 0, 0);
+    const hakamaGeo = new THREE.CylinderGeometry(0.19, 0.25, 0.42, 20, 3);
+    {
+      const p = hakamaGeo.attributes.position as THREE.BufferAttribute;
+      for (let i = 0; i < p.count; i++) {
+        const x = p.getX(i);
+        const z = p.getZ(i);
