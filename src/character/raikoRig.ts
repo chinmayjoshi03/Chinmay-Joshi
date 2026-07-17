@@ -102,3 +102,38 @@ export function buildRaiko(opts: { ghost?: boolean } = {}): Rig {
     haori: pick(toon(0xffffff, { map: cloth, side: THREE.DoubleSide })),
     sleeve: pick(toon(0xffffff, { map: sleeveCloth })),
     uniform: pick(toon(COLORS.uniform)),
+    sash: pick(toon(COLORS.sash)),
+    dark: pick(toon(COLORS.dark)),
+    volt: pick(new THREE.MeshBasicMaterial({ color: COLORS.volt })),
+    blade: pick(new THREE.MeshBasicMaterial({ color: 0xf4fbff })),
+    lock: pick(new THREE.MeshBasicMaterial({ color: COLORS.spark })),
+    ink: pick(new THREE.MeshBasicMaterial({ color: COLORS.ink })),
+  };
+
+  const outlines = new Map<number, THREE.ShaderMaterial>();
+  const part = (geo: THREE.BufferGeometry, mat: THREE.Material, outline: number | false = 0.028) => {
+    const mesh = new THREE.Mesh(geo, mat);
+    if (!isGhost && outline !== false) {
+      if (!outlines.has(outline)) outlines.set(outline, outlineMaterial(outline));
+      mesh.add(new THREE.Mesh(geo, outlines.get(outline)));
+    }
+    return mesh;
+  };
+  const group = (parent: THREE.Object3D, x = 0, y = 0, z = 0) => {
+    const g = new THREE.Group();
+    g.position.set(x, y, z);
+    parent.add(g);
+    return g;
+  };
+
+  const root = new THREE.Group();
+  const hips = group(root, 0, HIP_Y, 0);
+
+  // ── torso, sash ──
+  const torso = part(new THREE.CylinderGeometry(0.27, 0.29, 0.52, 18), M.uniform);
+  torso.position.y = 0.26;
+  hips.add(torso);
+  const collar = part(new THREE.CylinderGeometry(0.15, 0.17, 0.12, 16), M.uniform, 0.018);
+  collar.position.y = 0.56;
+  hips.add(collar);
+  const belt = part(new THREE.CylinderGeometry(0.315, 0.325, 0.13, 20), M.belt, 0.02);
