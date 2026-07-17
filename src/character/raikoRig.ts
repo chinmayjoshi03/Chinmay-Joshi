@@ -172,3 +172,37 @@ export function buildRaiko(opts: { ghost?: boolean } = {}): Rig {
       for (let i = 0; i < p.count; i++) {
         const x = p.getX(i);
         const z = p.getZ(i);
+        const k = 1 + Math.sin(Math.atan2(x, z) * 6) * 0.07;
+        p.setX(i, x * k);
+        p.setZ(i, z * k);
+      }
+      hakamaGeo.computeVertexNormals();
+    }
+    const thigh = part(hakamaGeo, M.uniform);
+    thigh.position.y = -0.21;
+    const wrap = part(new THREE.CylinderGeometry(0.13, 0.12, 0.12, 12), M.sleeve, 0.02);
+    wrap.position.y = -0.46;
+    const sock = part(new THREE.SphereGeometry(0.13, 14, 10), M.sash, 0.02);
+    sock.scale.set(0.85, 0.6, 1.3);
+    sock.position.set(0, -0.53, 0.06);
+    const sole = part(new THREE.CylinderGeometry(0.13, 0.13, 0.05, 16), M.sole, 0.016);
+    sole.scale.set(0.85, 1, 1.55);
+    sole.position.set(0, -0.6, 0.06);
+    const strap = part(new THREE.TorusGeometry(0.1, 0.018, 6, 14, Math.PI), M.sole, false);
+    strap.position.set(0, -0.56, 0.12);
+    leg.add(thigh, wrap, sock, sole, strap);
+    return leg;
+  };
+  const legP = makeLeg(1);
+  const legN = makeLeg(-1);
+
+  // ── arms: wide sleeve + hand ──
+  const makeArm = (side: 1 | -1) => {
+    const arm = group(hips, 0.32 * side, 0.43, 0);
+    const shoulder = part(new THREE.SphereGeometry(0.17, 14, 10), M.sleeve, 0.022);
+    const sleeve = part(new THREE.CylinderGeometry(0.12, 0.25, 0.56, 16), M.sleeve, 0.024);
+    sleeve.position.y = -0.28;
+    const hand = part(new THREE.SphereGeometry(0.1, 12, 10), M.skin, 0.022);
+    hand.position.y = -0.6;
+    arm.add(shoulder, sleeve, hand);
+    return arm;
