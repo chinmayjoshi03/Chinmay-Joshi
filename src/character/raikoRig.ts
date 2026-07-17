@@ -206,3 +206,29 @@ export function buildRaiko(opts: { ghost?: boolean } = {}): Rig {
     hand.position.y = -0.6;
     arm.add(shoulder, sleeve, hand);
     return arm;
+  };
+  const armP = makeArm(1);
+  const armN = makeArm(-1);
+
+  // ── scabbard on the P hip, with the sheathed hilt ──
+  const scabbard = group(hips, 0.31, 0.08, 0.02);
+  scabbard.rotation.set(1.15, 0, -0.12);
+  const sheath = part(new THREE.CylinderGeometry(0.042, 0.036, 0.95, 10), M.dark, 0.018);
+  sheath.position.y = -0.3;
+  scabbard.add(sheath);
+  const makeHilt = () => {
+    const g = new THREE.Group();
+    const grip = part(new THREE.CylinderGeometry(0.04, 0.04, 0.3, 10), M.grip, 0.018);
+    const band = part(new THREE.CylinderGeometry(0.046, 0.046, 0.05, 10), M.volt, false);
+    band.position.y = 0.13;
+    const guard = part(new THREE.CylinderGeometry(0.1, 0.1, 0.03, 14), M.volt, 0.018);
+    guard.position.y = -0.165;
+    g.add(grip, band, guard);
+    return g;
+  };
+  const sheathedHilt = makeHilt();
+  sheathedHilt.position.y = 0.36;
+  scabbard.add(sheathedHilt);
+
+  // ── drawn sword in the N hand (continues the arm when swordX = 0) ──
+  const sword = group(armN, 0, -0.62, 0);
