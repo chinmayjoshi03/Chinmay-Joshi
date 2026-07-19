@@ -258,3 +258,29 @@ export function buildRaiko(opts: { ghost?: boolean } = {}): Rig {
   let faceMat: THREE.MeshBasicMaterial | null = null;
   if (!isGhost) {
     (["sleep", "focus", "calm", "blink", "surprise", "happy", "angry", "shy", "panic"] as FaceKind[]).forEach((k) => (faces[k] = faceTexture(k)));
+    faceMat = new THREE.MeshBasicMaterial({ map: faces.sleep, transparent: true, depthWrite: false });
+    const patch = new THREE.Mesh(new THREE.SphereGeometry(0.606, 28, 18, Math.PI / 2 - 0.95, 1.9, Math.PI / 2 - 0.8, 1.6), faceMat);
+    patch.renderOrder = 2;
+    skull.add(patch);
+  }
+
+  // hair, anime-chibi style: one smooth rounded mass, then a few large clean clumps —
+  // a fringe over the forehead, pointed tips around the hem, side locks, flicks at the crown, a cowlick,
+  // and the white-blue lightning lock that makes it his
+  const hair = group(head, 0, 0.46, 0);
+  const cap = part(new THREE.SphereGeometry(0.65, 32, 20, 0, Math.PI * 2, 0, 1.8), M.hair);
+  cap.rotation.x = -0.6;
+  cap.scale.set(1.04, 1, 1.02);
+  hair.add(cap);
+
+  const dirOf = (a: number, b: number) => new THREE.Vector3(Math.sin(a) * Math.sin(b), Math.cos(a), Math.sin(a) * Math.cos(b));
+  const up = new THREE.Vector3(0, 1, 0);
+  const down = new THREE.Vector3(0, -1, 0);
+  const back = new THREE.Vector3(0, 0, -1);
+  /** Direction along the head surface toward `toward`, lifted off it by `lift`. */
+  const along = (nrm: THREE.Vector3, toward: THREE.Vector3, lift: number) => {
+    const t = toward.clone().addScaledVector(nrm, -toward.dot(nrm));
+    if (t.lengthSq() < 1e-4) t.copy(back);
+    return t.normalize().addScaledVector(nrm, lift).normalize();
+  };
+  /**
