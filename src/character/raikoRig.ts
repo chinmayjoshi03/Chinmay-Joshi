@@ -232,3 +232,29 @@ export function buildRaiko(opts: { ghost?: boolean } = {}): Rig {
 
   // ── drawn sword in the N hand (continues the arm when swordX = 0) ──
   const sword = group(armN, 0, -0.62, 0);
+  const drawn = makeHilt();
+  const blade = part(new THREE.CylinderGeometry(0.034, 0.008, 1.0, 6), M.blade, 0.014);
+  blade.scale.z = 0.32;
+  blade.position.y = -0.68;
+  sword.add(drawn, blade);
+  if (!isGhost) {
+    const glow = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.09, 0.03, 1.06, 8),
+      new THREE.MeshBasicMaterial({ color: COLORS.volt, ...GLOW, opacity: 0.28 }),
+    );
+    glow.scale.z = 0.5;
+    glow.position.y = -0.68;
+    sword.add(glow);
+  }
+  sword.visible = false;
+
+  // ── head ──
+  const head = group(hips, 0, 0.56, 0);
+  const skull = group(head, 0, 0.46, 0);
+  skull.scale.set(1, 0.93, 0.96);
+  skull.add(part(new THREE.SphereGeometry(0.6, 32, 24), M.skin));
+
+  const faces = {} as Record<FaceKind, THREE.Texture>;
+  let faceMat: THREE.MeshBasicMaterial | null = null;
+  if (!isGhost) {
+    (["sleep", "focus", "calm", "blink", "surprise", "happy", "angry", "shy", "panic"] as FaceKind[]).forEach((k) => (faces[k] = faceTexture(k)));
