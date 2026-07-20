@@ -310,3 +310,29 @@ export function buildRaiko(opts: { ghost?: boolean } = {}): Rig {
   // volume pushed up and back at the crown, a short pointed fringe swept to one side, short sideburns
   for (let i = 0; i < 7; i++) {
     const b = Math.PI - 1.05 + (i / 6) * 2.1; // back of the head only
+    const a = 1.75 + 0.25 * Math.max(0, -Math.cos(b));
+    const nrm = dirOf(a, b);
+    clump(a, b, along(nrm, down, 0.04), nrm, 0.44 + (i % 2) * 0.08, 0.22, 0.28, 0.4);
+  }
+  // crown: big clumps rising up and back, tips kicking upward
+  for (const [a, b, len] of [[0.35, Math.PI - 0.5, 0.42], [0.35, Math.PI + 0.5, 0.42], [0.75, Math.PI - 1.1, 0.4], [0.75, Math.PI, 0.44], [0.75, Math.PI + 1.1, 0.4], [1.2, Math.PI - 0.6, 0.36], [1.2, Math.PI + 0.6, 0.36]] as const) {
+    const nrm = dirOf(a, b);
+    clump(a, b, along(nrm, back.clone().addScaledVector(up, 0.4), 0.3), nrm.clone().addScaledVector(up, 0.8), len, 0.25, 0.45, 0.45);
+  }
+  // upper sides: swept back over the headphones, lying close
+  for (const sgn of [1, -1]) {
+    const nrm = dirOf(0.95, 1.65 * sgn);
+    clump(0.95, 1.65 * sgn, along(nrm, back.clone().addScaledVector(down, 0.5), 0.08), nrm, 0.46, 0.22, 0.28, 0.4);
+  }
+  // fringe: short pointed bangs, all sweeping toward his right, parted around the lightning lock
+  const sweepSide = new THREE.Vector3(-1, 0, 0);
+  for (const [b, len, w] of [[-0.75, 0.38, 0.16], [-0.4, 0.34, 0.15], [0.35, 0.36, 0.16], [0.72, 0.32, 0.15]] as const) {
+    const nrm = dirOf(0.88, b);
+    clump(0.88, b, along(nrm, down.clone().addScaledVector(sweepSide, 0.35), 0.14), sweepSide.clone().addScaledVector(nrm, 0.3), len, w, 0.3, 0.42);
+  }
+  // short sideburns in front of the ears
+  for (const sgn of [1, -1]) {
+    const nrm = dirOf(1.3, 1.3 * sgn);
+    clump(1.3, 1.3 * sgn, along(nrm, down, 0.02), new THREE.Vector3(-sgn, 0, 0), 0.4, 0.12, 0.1, 0.4);
+  }
+  // cowlick
