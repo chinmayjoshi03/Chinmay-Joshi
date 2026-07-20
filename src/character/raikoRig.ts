@@ -284,3 +284,29 @@ export function buildRaiko(opts: { ghost?: boolean } = {}): Rig {
     return t.normalize().addScaledVector(nrm, lift).normalize();
   };
   /**
+   * One clump of hair rooted on the head at polar `a` / azimuth `b`, growing along `dir`, its tip curving
+   * toward `curl` by `bend` (fraction of its length). A tapered cone, bent and flattened.
+   */
+  const clump = (a: number, b: number, dir: THREE.Vector3, curl: THREE.Vector3, len: number, width: number, bend: number, flat = 0.5) => {
+    const geo = new THREE.ConeGeometry(width, len, 10, 8);
+    geo.translate(0, len / 2, 0);
+    const pos = geo.attributes.position as THREE.BufferAttribute;
+    for (let i = 0; i < pos.count; i++) {
+      const t = Math.max(0, pos.getY(i) / len);
+      pos.setX(i, pos.getX(i) + t * t * bend * len);
+      pos.setZ(i, pos.getZ(i) * flat);
+    }
+    geo.computeVertexNormals();
+    const Y = dir.clone().normalize();
+    const X = curl.clone().addScaledVector(Y, -curl.dot(Y)).normalize();
+    const Z = new THREE.Vector3().crossVectors(X, Y);
+    const mesh = part(geo, M.hair, 0.026);
+    mesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(X, Y, Z));
+    mesh.position.copy(dirOf(a, b).multiplyScalar(0.6));
+    hair.add(mesh);
+  };
+
+  // short boy's cut: tight, short tips at the back and nape (nothing flaring at the cheeks),
+  // volume pushed up and back at the crown, a short pointed fringe swept to one side, short sideburns
+  for (let i = 0; i < 7; i++) {
+    const b = Math.PI - 1.05 + (i / 6) * 2.1; // back of the head only
