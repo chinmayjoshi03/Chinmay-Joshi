@@ -336,3 +336,29 @@ export function buildRaiko(opts: { ghost?: boolean } = {}): Rig {
     clump(1.3, 1.3 * sgn, along(nrm, down, 0.02), new THREE.Vector3(-sgn, 0, 0), 0.4, 0.12, 0.1, 0.4);
   }
   // cowlick
+  clump(0.15, 0.4, new THREE.Vector3(0.1, 1, 0.3), back.clone(), 0.26, 0.055, 0.9, 0.6);
+
+  const lockShape = new THREE.Shape(
+    [[-0.04, 0.02], [-0.13, -0.2], [-0.04, -0.18], [-0.11, -0.44], [0.1, -0.12], [0.01, -0.14], [0.07, 0.02]].map(([x, y]) => new THREE.Vector2(x, y)),
+  );
+  const lockGeo = new THREE.ExtrudeGeometry(lockShape, { depth: 0.035, bevelEnabled: false });
+  lockGeo.center();
+  const bolt = new THREE.Mesh(lockGeo, M.lock);
+  bolt.position.set(0, 0.2, 0.62);
+  bolt.rotation.x = -0.12;
+  hair.add(bolt);
+  if (!isGhost) {
+    const ink = new THREE.Mesh(lockGeo, M.ink);
+    ink.scale.set(1.28, 1.14, 1);
+    ink.position.z = -0.014;
+    bolt.add(ink);
+  }
+
+  // headphones worn over the hair
+  const band = part(new THREE.TorusGeometry(0.68, 0.04, 8, 28, Math.PI), M.dark, 0.02);
+  band.position.y = 0.44;
+  head.add(band);
+  for (const side of [1, -1]) {
+    const cup = part(new THREE.CylinderGeometry(0.17, 0.17, 0.13, 18), M.dark, 0.022);
+    cup.rotation.z = Math.PI / 2;
+    cup.position.set(0.66 * side, 0.42, 0);
