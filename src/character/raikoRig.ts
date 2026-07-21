@@ -362,3 +362,29 @@ export function buildRaiko(opts: { ghost?: boolean } = {}): Rig {
     const cup = part(new THREE.CylinderGeometry(0.17, 0.17, 0.13, 18), M.dark, 0.022);
     cup.rotation.z = Math.PI / 2;
     cup.position.set(0.66 * side, 0.42, 0);
+    const mark = new THREE.Mesh(new THREE.CircleGeometry(0.075, 4), M.volt);
+    mark.rotation.y = (Math.PI / 2) * side;
+    mark.position.set(0.727 * side, 0.42, 0);
+    head.add(cup, mark);
+  }
+
+  const pose: Pose = { ...POSES.sleep };
+  const look = { yaw: 0, pitch: 0 };
+  let face: FaceKind = "sleep";
+
+  const rig: Rig = {
+    root,
+    pose,
+    look,
+    facing: 1,
+    ghost,
+    setFace(kind) {
+      face = kind;
+      if (faceMat) faceMat.map = faces[kind];
+    },
+    setSword(inHand) {
+      sword.visible = inHand;
+      sheathedHilt.visible = !inHand;
+    },
+    update(t, sleeping = false) {
+      const p = pose;
