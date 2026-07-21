@@ -37,3 +37,41 @@ export function toonGradient() {
   return gradient;
 }
 
+export function toon(color: number, opts: Partial<THREE.MeshToonMaterialParameters> = {}) {
+  return new THREE.MeshToonMaterial({ color, gradientMap: toonGradient(), ...opts });
+}
+
+/** Inverted-hull ink outline: back faces pushed out along the normal. */
+export function outlineMaterial(thickness = 0.028) {
+  return new THREE.ShaderMaterial({
+    uniforms: { t: { value: thickness } },
+    vertexShader: `uniform float t; void main(){ gl_Position = projectionMatrix * modelViewMatrix * vec4(position + normalize(normal) * t, 1.0); }`,
+    fragmentShader: `void main(){ gl_FragColor = vec4(0.05, 0.045, 0.04, 1.0); }`,
+    side: THREE.BackSide,
+  });
+}
+
+function canvas(size: number) {
+  const c = document.createElement("canvas");
+  c.width = c.height = size;
+  return [c, c.getContext("2d")!] as const;
+}
+
+/** Storm haori cloth: indigo with yellow bolts and white cloud swirls. */
+export function haoriTexture() {
+  const [c, g] = canvas(256);
+  g.fillStyle = "#2c3a63";
+  g.fillRect(0, 0, 256, 256);
+  const bolt = (x: number, y: number, s: number) => {
+    const pts = [[8, 2], [3, 12], [8, 11], [4, 20], [13, 8], [8, 9], [11, 2]];
+    g.beginPath();
+    pts.forEach(([px, py], i) => (i ? g.lineTo(x + px * s, y + py * s) : g.moveTo(x + px * s, y + py * s)));
+    g.closePath();
+    g.fillStyle = "#ffd21f";
+    g.strokeStyle = "#111";
+    g.lineWidth = 3;
+    g.lineJoin = "round";
+    g.stroke();
+    g.fill();
+  };
+  const cloud = (x: number, y: number, s: number) => {
