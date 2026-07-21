@@ -388,3 +388,29 @@ export function buildRaiko(opts: { ghost?: boolean } = {}): Rig {
     },
     update(t, sleeping = false) {
       const p = pose;
+      const breath = Math.sin(t * (sleeping ? 1.6 : 2.8));
+      root.rotation.y = p.yaw * rig.facing;
+      hips.position.y = HIP_Y + p.hipsY + breath * 0.006;
+      hips.rotation.set(p.lean, p.twist, p.roll);
+      hips.scale.y = 1 + breath * 0.012;
+      head.rotation.set(p.headX + look.pitch + (sleeping ? breath * 0.05 : 0), p.headY + look.yaw, p.headZ);
+      armP.rotation.set(p.armPX, 0, p.armPZ);
+      armN.rotation.set(p.armNX, 0, p.armNZ);
+      legP.rotation.set(p.legPX, 0, p.legPZ);
+      legN.rotation.set(p.legNX, 0, p.legNZ);
+      sword.rotation.x = p.swordX;
+      scabbard.position.set(0.31 - 0.26 * p.saya, 0.08 + 0.04 * p.saya, 0.02 + 0.08 * p.saya);
+      scabbard.rotation.set(1.15 + 0.45 * p.saya, 0, -0.12 + 0.1 * p.saya);
+      coat.rotation.set(-p.flare * 0.6 + p.saya * 0.55, 0, // iai: the haori trails behind the crouch
+         Math.sin(t * 1.9) * 0.02 + Math.sin(t * 23) * 0.03 * p.flare);
+      coat.scale.set(1 + p.flare * 0.12, 1 + p.flare * 0.1, 1 + p.flare * 0.3);
+      hair.rotation.z = Math.sin(t * 2.1) * 0.02;
+      hair.rotation.x = -p.flare * 0.08;
+      if (faceMat && (face === "focus" || face === "calm")) {
+        faceMat.map = t % 3.6 < 0.13 ? faces.blink : faces[face];
+      }
+    },
+  };
+  rig.update(0);
+  return rig;
+}
