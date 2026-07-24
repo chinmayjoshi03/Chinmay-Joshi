@@ -152,3 +152,33 @@ export function faceTexture(kind: FaceKind) {
     g.stroke();
   };
   /** lookY moves the iris down (shy, looking at the ground); droop lowers the lid's outer corner. */
+  const eye = (x: number, lookY = 0, droop = 0) => {
+    const out = x < 128 ? -1 : 1; // outer corner side
+    g.save();
+    g.beginPath();
+    g.ellipse(x, EY + 2, 24, 29, 0, 0, Math.PI * 2);
+    g.clip();
+    g.fillStyle = "#fff";
+    g.fill();
+    const iy = EY + 6 + lookY;
+    const grad = g.createRadialGradient(x, iy - 8, 2, x, iy, 26);
+    grad.addColorStop(0, "#8fd2f7");
+    grad.addColorStop(0.55, "#2a7fc6");
+    grad.addColorStop(1, "#10335c");
+    g.fillStyle = grad;
+    g.beginPath();
+    g.ellipse(x, iy, 19, 24, 0, 0, Math.PI * 2);
+    g.fill();
+    g.fillStyle = "#0b1a2e";
+    g.beginPath();
+    g.ellipse(x, iy + 2, 8, 12, 0, 0, Math.PI * 2);
+    g.fill();
+    g.fillStyle = "#fff";
+    g.beginPath();
+    g.arc(x - 7, iy - 9, 6, 0, Math.PI * 2);
+    g.fill();
+    // heavy upper lid: skin above a flat, slightly angled line
+    g.fillStyle = "#fde3cc";
+    g.beginPath();
+    g.moveTo(x - 30, EY - 40);
+    g.lineTo(x + 30, EY - 40);
