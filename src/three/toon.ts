@@ -114,3 +114,41 @@ export function gripTexture() {
   t.repeat.set(1, 4);
   t.colorSpace = THREE.SRGBColorSpace;
   return t;
+}
+
+export type FaceKind = "sleep" | "focus" | "calm" | "blink" | "surprise" | "happy" | "angry" | "shy" | "panic";
+
+/** Face decal (eyes, brows, mouth, blush) drawn for a curved patch on the head. */
+export function faceTexture(kind: FaceKind) {
+  const [c, g] = canvas(256);
+  const L = 80;
+  const R = 176;
+  const EY = 138;
+  g.lineCap = "round";
+  g.lineJoin = "round";
+
+  const blush = () => {
+    g.fillStyle = "rgba(255,120,110,.13)";
+    for (const x of [L - 28, R + 28]) {
+      g.beginPath();
+      g.ellipse(x, EY + 42, 14, 6, 0, 0, Math.PI * 2);
+      g.fill();
+    }
+  };
+  const arc = (x: number, up: boolean) => {
+    g.strokeStyle = "#111";
+    g.lineWidth = 8;
+    g.beginPath();
+    if (up) g.arc(x, EY + 16, 22, Math.PI * 1.15, Math.PI * 1.85);
+    else g.arc(x, EY - 12, 22, Math.PI * 0.15, Math.PI * 0.85);
+    g.stroke();
+  };
+  const brow = (x: number, dir: number, tilt: number) => {
+    g.strokeStyle = "#5e4705";
+    g.lineWidth = 10;
+    g.beginPath();
+    g.moveTo(x - 22 * dir, EY - 50 - tilt * 0.7);
+    g.lineTo(x + 20 * dir, EY - 50 + tilt * 0.7);
+    g.stroke();
+  };
+  /** lookY moves the iris down (shy, looking at the ground); droop lowers the lid's outer corner. */
