@@ -75,3 +75,42 @@ export function haoriTexture() {
     g.fill();
   };
   const cloud = (x: number, y: number, s: number) => {
+    g.strokeStyle = "#f3eedd";
+    g.lineWidth = 5;
+    g.lineCap = "round";
+    g.beginPath();
+    g.arc(x, y, 9 * s, Math.PI * 0.9, Math.PI * 2.2);
+    g.arc(x + 15 * s, y + 3 * s, 7 * s, Math.PI * 1.1, Math.PI * 2.4);
+    g.stroke();
+  };
+  bolt(14, 10, 4.4);
+  bolt(142, 132, 4.4);
+  cloud(160, 52, 2.1);
+  cloud(40, 186, 2.1);
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 4;
+  return t;
+}
+
+/** Katana grip: cream wrap crossing over dark diamonds. */
+export function gripTexture() {
+  const [c, g] = canvas(64);
+  g.fillStyle = "#1c1a22";
+  g.fillRect(0, 0, 64, 64);
+  g.strokeStyle = "#efe6cf";
+  g.lineWidth = 9;
+  for (const d of [-64, 0, 64]) {
+    g.beginPath();
+    g.moveTo(d, 0);
+    g.lineTo(d + 64, 64);
+    g.moveTo(d + 64, 0);
+    g.lineTo(d, 64);
+    g.stroke();
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(1, 4);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
