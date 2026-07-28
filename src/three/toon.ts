@@ -272,3 +272,33 @@ export function faceTexture(kind: FaceKind) {
       g.fill();
       // tears pooling and streaming
       g.fillStyle = "rgba(120,200,255,.85)";
+      g.beginPath();
+      g.moveTo(x - 20, EY + 26);
+      g.quadraticCurveTo(x, EY + 40, x + 20, EY + 26);
+      g.lineTo(x + 12, EY + 104);
+      g.lineTo(x - 12, EY + 104);
+      g.closePath();
+      g.fill();
+    }
+    g.strokeStyle = "#8a6a08";
+    g.lineWidth = 7;
+    for (const [x, dir] of [[L, 1], [R, -1]] as const) {
+      g.beginPath();
+      g.moveTo(x - 22 * dir, EY - 48);
+      g.lineTo(x + 18 * dir, EY - 62);
+      g.stroke();
+    }
+    g.fillStyle = "#7a2a20";
+    g.strokeStyle = "#111";
+    g.lineWidth = 5;
+    g.beginPath();
+    g.moveTo(100, 196);
+    for (let i = 0; i <= 8; i++) g.lineTo(100 + i * 7, 196 + (i % 2 ? -5 : 0));
+    g.quadraticCurveTo(128, 246, 100, 196);
+    g.closePath();
+    g.fill();
+    g.stroke();
+  } else if (kind === "shy") {
+    // bashful: eyes glancing down and away, deep blush with hatching, small wobbly smile
+    g.fillStyle = "rgba(255,95,110,.5)";
+    for (const x of [L - 22, R + 22]) {
