@@ -212,3 +212,33 @@ export function faceTexture(kind: FaceKind) {
     }
     g.fillStyle = "#7a2a20";
     g.strokeStyle = "#111";
+    g.lineWidth = 4;
+    g.beginPath();
+    g.ellipse(128, 206, 9 * open, 11 * open, 0, 0, Math.PI * 2);
+    g.fill();
+    g.stroke();
+  };
+
+  blush();
+  if (kind === "calm") {
+    // default stance: calm and a little shy — lids drooping, eyes on the ground, small neutral mouth
+    eye(L, 7, 9);
+    eye(R, 7, 9);
+    brow(L, 1, -3);
+    brow(R, -1, -3);
+    mouth(0);
+  } else if (kind === "focus") {
+    eye(L);
+    eye(R);
+    brow(L, 1, 9);
+    brow(R, -1, 9);
+    mouth(0);
+  } else if (kind === "blink") {
+    arc(L, false);
+    arc(R, false);
+    brow(L, 1, 9);
+    brow(R, -1, 9);
+    mouth(0);
+  } else if (kind === "sleep") {
+    arc(L, false);
+    arc(R, false);
