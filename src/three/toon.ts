@@ -182,3 +182,33 @@ export function faceTexture(kind: FaceKind) {
     g.beginPath();
     g.moveTo(x - 30, EY - 40);
     g.lineTo(x + 30, EY - 40);
+    g.lineTo(x + 30, EY - 16 + (out > 0 ? droop : -droop * 0.3));
+    g.lineTo(x - 30, EY - 16 + (out < 0 ? droop : -droop * 0.3));
+    g.closePath();
+    g.fill();
+    g.restore();
+    g.strokeStyle = "#111";
+    g.lineWidth = 9;
+    g.lineCap = "round";
+    g.beginPath();
+    g.moveTo(x - 26 * -out, EY - 18 - droop * 0.3);
+    g.lineTo(x + 26 * out, EY - 16 + droop);
+    g.stroke();
+    g.lineWidth = 3;
+    g.beginPath();
+    g.moveTo(x - 14, EY + 31);
+    g.lineTo(x + 14, EY + 31);
+    g.stroke();
+  };
+  const mouth = (open: number) => {
+    if (open <= 0) {
+      g.strokeStyle = "#111";
+      g.lineWidth = 5;
+      g.beginPath();
+      g.moveTo(118, 206);
+      g.lineTo(138, 206);
+      g.stroke();
+      return;
+    }
+    g.fillStyle = "#7a2a20";
+    g.strokeStyle = "#111";
