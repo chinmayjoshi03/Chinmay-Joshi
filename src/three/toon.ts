@@ -242,3 +242,33 @@ export function faceTexture(kind: FaceKind) {
   } else if (kind === "sleep") {
     arc(L, false);
     arc(R, false);
+    brow(L, 1, -4);
+    brow(R, -1, -4);
+    mouth(0.75);
+    g.fillStyle = "#bfe3ff";
+    g.strokeStyle = "#111";
+    g.lineWidth = 3;
+    g.beginPath();
+    g.ellipse(146, 222, 7, 11, 0, 0, Math.PI * 2);
+    g.fill();
+    g.stroke();
+  } else if (kind === "panic") {
+    // picked up: huge wobbly eyes, streaming tears, brows shot up, wailing mouth
+    for (const x of [L, R]) {
+      g.fillStyle = "#fff";
+      g.strokeStyle = "#111";
+      g.lineWidth = 7;
+      g.beginPath();
+      g.ellipse(x, EY, 31, 34, 0, 0, Math.PI * 2);
+      g.fill();
+      g.stroke();
+      g.fillStyle = "#111";
+      g.beginPath();
+      g.arc(x + (x === L ? 6 : -6), EY + 4, 8, 0, Math.PI * 2);
+      g.fill();
+      g.fillStyle = "#fff";
+      g.beginPath();
+      g.arc(x + (x === L ? 3 : -9), EY, 3, 0, Math.PI * 2);
+      g.fill();
+      // tears pooling and streaming
+      g.fillStyle = "rgba(120,200,255,.85)";
