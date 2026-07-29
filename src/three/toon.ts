@@ -377,3 +377,48 @@ export function faceTexture(kind: FaceKind) {
       g.fill();
       g.strokeStyle = "#111";
       g.lineWidth = 9;
+      g.beginPath();
+      g.moveTo(x - 30, EY - 8 - 12 * dir);
+      g.lineTo(x + 30, EY - 8 + 12 * dir);
+      g.stroke();
+      // brow: thick, angled hard toward the nose
+      g.lineWidth = 11;
+      g.strokeStyle = "#5a4404";
+      g.beginPath();
+      g.moveTo(x - 30 * dir, EY - 56);
+      g.lineTo(x + 26 * dir, EY - 30);
+      g.stroke();
+    }
+    // electric glint in the pupils
+    g.fillStyle = "#ffd21f";
+    for (const x of [L, R]) {
+      g.beginPath();
+      g.arc(x, EY + 8, 5, 0, Math.PI * 2);
+      g.fill();
+    }
+    // gritted teeth
+    g.fillStyle = "#fff";
+    g.strokeStyle = "#111";
+    g.lineWidth = 4;
+    g.beginPath();
+    g.rect(104, 196, 48, 20);
+    g.fill();
+    g.stroke();
+    g.lineWidth = 2.5;
+    g.beginPath();
+    g.moveTo(104, 206);
+    g.lineTo(152, 206);
+    for (const x of [116, 128, 140]) {
+      g.moveTo(x, 196);
+      g.lineTo(x, 216);
+    }
+    g.stroke();
+    // anger mark
+    g.strokeStyle = "#e0342a";
+    g.lineWidth = 6;
+    const ax = 206;
+    const ay = 52;
+    for (const [dx, dy] of [[1, 1], [-1, 1], [1, -1], [-1, -1]]) {
+      g.beginPath();
+      g.moveTo(ax + 5 * dx, ay + 14 * dy);
+      g.quadraticCurveTo(ax + 5 * dx, ay + 5 * dy, ax + 14 * dx, ay + 5 * dy);
