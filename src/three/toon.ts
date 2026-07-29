@@ -467,3 +467,47 @@ export function faceTexture(kind: FaceKind) {
   t.anisotropy = 4;
   return t;
 }
+
+/** Soft round dot for additive particles. */
+export function dotTexture() {
+  const [c, g] = canvas(64);
+  const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  grad.addColorStop(0, "rgba(255,255,255,1)");
+  grad.addColorStop(0.3, "rgba(255,255,255,.7)");
+  grad.addColorStop(1, "rgba(255,255,255,0)");
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(c);
+}
+
+/** Dark blob for the contact shadow. */
+export function shadowTexture() {
+  const [c, g] = canvas(64);
+  const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  grad.addColorStop(0, "rgba(0,0,0,.6)");
+  grad.addColorStop(1, "rgba(0,0,0,0)");
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(c);
+}
+
+/** Display-type glyphs ("Z", "!?") as sprite textures. */
+/** Yellow inked caption. `width` > 128 gives a wide canvas (128 tall) for longer lines; scale the sprite by width/128. */
+export function textTexture(text: string, px = 84, width = 128) {
+  const c = document.createElement("canvas");
+  c.width = width;
+  c.height = 128;
+  const g = c.getContext("2d")!;
+  g.font = `900 ${px}px "Dela Gothic One", "Arial Black", sans-serif`;
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  g.lineWidth = 12;
+  g.lineJoin = "round";
+  g.strokeStyle = "#111";
+  g.strokeText(text, width / 2, 68);
+  g.fillStyle = "#ffd21f";
+  g.fillText(text, width / 2, 68);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
