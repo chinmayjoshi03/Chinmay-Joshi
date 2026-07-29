@@ -332,3 +332,48 @@ export function faceTexture(kind: FaceKind) {
       g.ellipse(x + 8, EY + 16, 20, 25, 0, 0, Math.PI * 2);
       g.fill();
       g.fillStyle = "#fff";
+      g.beginPath();
+      g.arc(x, EY + 4, 7, 0, Math.PI * 2);
+      g.fill();
+      g.restore();
+      // soft, half-lowered lids
+      g.fillStyle = "#fde3cc";
+      g.fillRect(x - 32, EY - 40, 64, 34);
+      g.strokeStyle = "#111";
+      g.lineWidth = 8;
+      g.beginPath();
+      g.moveTo(x - 29, EY - 4);
+      g.quadraticCurveTo(x, EY - 12, x + 29, EY - 4);
+      g.stroke();
+    }
+    // worried-cute brows
+    g.strokeStyle = "#8a6a08";
+    g.lineWidth = 6;
+    for (const [x, dir] of [[L, 1], [R, -1]] as const) {
+      g.beginPath();
+      g.moveTo(x - 18 * dir, EY - 40);
+      g.quadraticCurveTo(x, EY - 52, x + 18 * dir, EY - 50);
+      g.stroke();
+    }
+    g.strokeStyle = "#111";
+    g.lineWidth = 5;
+    g.beginPath();
+    g.moveTo(114, 204);
+    g.quadraticCurveTo(121, 212, 128, 205);
+    g.quadraticCurveTo(135, 212, 142, 204);
+    g.stroke();
+  } else if (kind === "angry") {
+    // narrowed glaring eyes under slammed-down lids, steep brows, gritted teeth, anger mark
+    eye(L);
+    eye(R);
+    g.fillStyle = "#fde3cc";
+    for (const [x, dir] of [[L, 1], [R, -1]] as const) {
+      g.beginPath();
+      g.moveTo(x - 34, EY - 44);
+      g.lineTo(x + 34, EY - 44);
+      g.lineTo(x + 34, EY - 8 + 14 * dir);
+      g.lineTo(x - 34, EY - 8 - 14 * dir);
+      g.closePath();
+      g.fill();
+      g.strokeStyle = "#111";
+      g.lineWidth = 9;
