@@ -422,3 +422,48 @@ export function faceTexture(kind: FaceKind) {
       g.beginPath();
       g.moveTo(ax + 5 * dx, ay + 14 * dy);
       g.quadraticCurveTo(ax + 5 * dx, ay + 5 * dy, ax + 14 * dx, ay + 5 * dy);
+      g.stroke();
+    }
+  } else if (kind === "surprise") {
+    for (const x of [L, R]) {
+      g.fillStyle = "#fff";
+      g.strokeStyle = "#111";
+      g.lineWidth = 7;
+      g.beginPath();
+      g.arc(x, EY, 30, 0, Math.PI * 2);
+      g.fill();
+      g.stroke();
+      g.fillStyle = "#111";
+      g.beginPath();
+      g.arc(x, EY, 7, 0, Math.PI * 2);
+      g.fill();
+    }
+    brow(L, 1, -8);
+    brow(R, -1, -8);
+    mouth(1.15);
+  } else {
+    g.fillStyle = "rgba(255,110,120,.35)";
+    for (const x of [L - 26, R + 26]) {
+      g.beginPath();
+      g.ellipse(x, EY + 40, 20, 11, 0, 0, Math.PI * 2);
+      g.fill();
+    }
+    arc(L, true);
+    arc(R, true);
+    brow(L, 1, -5);
+    brow(R, -1, -5);
+    g.fillStyle = "#7a2a20";
+    g.strokeStyle = "#111";
+    g.lineWidth = 4;
+    g.beginPath();
+    g.moveTo(106, 198);
+    g.quadraticCurveTo(128, 236, 150, 198);
+    g.closePath();
+    g.fill();
+    g.stroke();
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 4;
+  return t;
+}
