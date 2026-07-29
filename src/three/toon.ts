@@ -302,3 +302,33 @@ export function faceTexture(kind: FaceKind) {
     // bashful: eyes glancing down and away, deep blush with hatching, small wobbly smile
     g.fillStyle = "rgba(255,95,110,.5)";
     for (const x of [L - 22, R + 22]) {
+      g.beginPath();
+      g.ellipse(x, EY + 38, 24, 13, 0, 0, Math.PI * 2);
+      g.fill();
+    }
+    g.strokeStyle = "rgba(220,60,80,.75)";
+    g.lineWidth = 3;
+    for (const x0 of [L - 36, R + 8]) {
+      for (let k = 0; k < 3; k++) {
+        g.beginPath();
+        g.moveTo(x0 + k * 10, EY + 46);
+        g.lineTo(x0 + k * 10 + 7, EY + 30);
+        g.stroke();
+      }
+    }
+    for (const x of [L, R]) {
+      g.save();
+      g.beginPath();
+      g.ellipse(x, EY + 4, 27, 30, 0, 0, Math.PI * 2);
+      g.clip();
+      g.fillStyle = "#fff";
+      g.fill();
+      const grad = g.createRadialGradient(x + 8, EY + 10, 2, x + 8, EY + 14, 26);
+      grad.addColorStop(0, "#9fe0ff");
+      grad.addColorStop(0.55, "#2f8fd8");
+      grad.addColorStop(1, "#123a66");
+      g.fillStyle = grad;
+      g.beginPath();
+      g.ellipse(x + 8, EY + 16, 20, 25, 0, 0, Math.PI * 2);
+      g.fill();
+      g.fillStyle = "#fff";
