@@ -124,3 +124,28 @@ export class Sparks {
       const v = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
       if (dir) v.multiplyScalar(spread).add(dir).normalize();
       v.multiplyScalar(speed * (0.35 + Math.random() * 0.65));
+      this.pos.set([at.x, at.y, at.z], i * 3);
+      this.vel.set([v.x, v.y, v.z], i * 3);
+      this.life[i] = this.max[i] = 0.35 + Math.random() * 0.55;
+    }
+  }
+
+  update(dt: number, gravity = 900) {
+    const drag = Math.pow(0.12, dt);
+    for (let i = 0; i < this.count; i++) {
+      if (this.life[i] <= 0) continue;
+      this.life[i] -= dt;
+      const j = i * 3;
+      this.vel[j] *= drag;
+      this.vel[j + 2] *= drag;
+      this.vel[j + 1] = this.vel[j + 1] * drag - gravity * dt;
+      this.pos[j] += this.vel[j] * dt;
+      this.pos[j + 1] += this.vel[j + 1] * dt;
+      this.pos[j + 2] += this.vel[j + 2] * dt;
+      const f = Math.max(0, this.life[i] / this.max[i]);
+      // white-hot → yellow → ember as it dies
+      this.tint.setRGB(f, f * (0.55 + 0.45 * f), f * f * f);
+      this.col.set([this.tint.r, this.tint.g, this.tint.b], j);
+    }
+    this.points.geometry.attributes.position.needsUpdate = true;
+    this.points.geometry.attributes.color.needsUpdate = true;
