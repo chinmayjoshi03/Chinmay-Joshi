@@ -174,3 +174,28 @@ export class Pulses {
   ring(at: V3, to: number, color: number = COLORS.volt, dur = 0.55) {
     this.spawn(this.ringGeo, color, at, to * 0.15, to, dur).rotation.x = -Math.PI / 2 + 0.38;
   }
+
+  /** Crescent swept by the blade. facing = ±1. */
+  slash(at: V3, size: number, facing: number) {
+    const m = this.spawn(this.arcGeo, COLORS.spark, at, size * 0.5, size, 0.32, -9 * facing);
+    m.rotation.set(-0.5, facing > 0 ? 0.5 : Math.PI - 0.5, -0.6);
+    const m2 = this.spawn(this.arcGeo, COLORS.volt, at, size * 0.45, size * 1.25, 0.42, -7 * facing);
+    m2.rotation.copy(m.rotation);
+  }
+
+  update(dt: number) {
+    for (const p of this.live) {
+      p.t += dt;
+      const k = Math.min(1, p.t / p.dur);
+      const e = 1 - Math.pow(1 - k, 3);
+      p.mesh.scale.setScalar(p.from + (p.to - p.from) * e);
+      p.mesh.rotation.z += p.spin * dt;
+      p.mat.opacity = (1 - k) * 0.8;
+      if (k >= 1) {
+        this.group.remove(p.mesh);
+        p.mat.dispose();
+      }
+    }
+    this.live = this.live.filter((p) => p.t < p.dur);
+  }
+}
