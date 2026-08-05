@@ -99,3 +99,28 @@ export class Sparks {
   private max: Float32Array;
   private next = 0;
   private tint = new THREE.Color();
+
+  constructor(private count = 360, size = 22) {
+    this.pos = new Float32Array(count * 3);
+    this.col = new Float32Array(count * 3);
+    this.vel = new Float32Array(count * 3);
+    this.life = new Float32Array(count);
+    this.max = new Float32Array(count).fill(1);
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(this.pos, 3));
+    geo.setAttribute("color", new THREE.BufferAttribute(this.col, 3));
+    this.points = new THREE.Points(
+      geo,
+      new THREE.PointsMaterial({ size, map: dotTexture(), vertexColors: true, ...GLOW, depthTest: false }),
+    );
+    this.points.frustumCulled = false;
+  }
+
+  /** dir biases the burst; spread 0..1 blends from a cone to a full sphere. */
+  burst(at: V3, n: number, speed: number, dir?: V3, spread = 1) {
+    for (let k = 0; k < n; k++) {
+      const i = this.next;
+      this.next = (this.next + 1) % this.count;
+      const v = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+      if (dir) v.multiplyScalar(spread).add(dir).normalize();
+      v.multiplyScalar(speed * (0.35 + Math.random() * 0.65));
