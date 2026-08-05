@@ -65,3 +65,37 @@ export class Bolts {
       bolt.base.push(opacity);
     };
     for (const [paths, k] of [[[main], 1], [branches, 0.45]] as [V3[][], number][]) {
+      layer(paths, width * 3.2 * k, COLORS.volt, 0.22);
+      layer(paths, width * k, COLORS.volt, 0.95);
+      layer(paths, Math.max(1, (width / 2.6) * k), COLORS.spark, 1);
+    }
+    this.bolts.push(bolt);
+  }
+
+  update(dt: number) {
+    for (const b of this.bolts) {
+      b.life -= dt * 2.8;
+      const flicker = Math.random() < 0.25 ? 0.55 : 1;
+      b.mats.forEach((m, i) => (m.opacity = Math.max(0, b.life) * b.base[i] * flicker));
+      if (b.life <= 0) {
+        b.lines.forEach((l) => {
+          this.group.remove(l);
+          l.geometry.dispose();
+        });
+        b.mats.forEach((m) => m.dispose());
+      }
+    }
+    this.bolts = this.bolts.filter((b) => b.life > 0);
+  }
+}
+
+/** Pooled additive spark particles with gravity. */
+export class Sparks {
+  readonly points: THREE.Points;
+  private pos: Float32Array;
+  private col: Float32Array;
+  private vel: Float32Array;
+  private life: Float32Array;
+  private max: Float32Array;
+  private next = 0;
+  private tint = new THREE.Color();
