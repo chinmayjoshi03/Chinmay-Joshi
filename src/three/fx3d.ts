@@ -149,3 +149,28 @@ export class Sparks {
     }
     this.points.geometry.attributes.position.needsUpdate = true;
     this.points.geometry.attributes.color.needsUpdate = true;
+  }
+}
+
+type Pulse = { mesh: THREE.Mesh; mat: THREE.MeshBasicMaterial; t: number; dur: number; from: number; to: number; spin: number };
+
+/** Expanding ground shockwaves and sword-swing arcs. */
+export class Pulses {
+  readonly group = new THREE.Group();
+  private live: Pulse[] = [];
+  private ringGeo = new THREE.RingGeometry(0.95, 1, 64);
+  private arcGeo = new THREE.TorusGeometry(1, 0.022, 6, 48, Math.PI * 1.15);
+
+  private spawn(geo: THREE.BufferGeometry, color: number, at: V3, from: number, to: number, dur: number, spin = 0) {
+    const mat = new THREE.MeshBasicMaterial({ color, ...GLOW, depthTest: false, side: THREE.DoubleSide });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.copy(at);
+    this.group.add(mesh);
+    this.live.push({ mesh, mat, t: 0, dur, from, to, spin });
+    return mesh;
+  }
+
+  /** Flat ring on the floor, tilted a little toward the camera. */
+  ring(at: V3, to: number, color: number = COLORS.volt, dur = 0.55) {
+    this.spawn(this.ringGeo, color, at, to * 0.15, to, dur).rotation.x = -Math.PI / 2 + 0.38;
+  }
