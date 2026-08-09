@@ -50,3 +50,29 @@ export default function Lab() {
 
     const size = () => {
       renderer.setSize(innerWidth, innerHeight, false);
+      camera.aspect = innerWidth / innerHeight;
+      camera.position.set(0, 0, Math.max(15, 21 / camera.aspect));
+      camera.updateProjectionMatrix();
+    };
+    size();
+    addEventListener("resize", size);
+    let raf = 0;
+    const frame = (ms: number) => {
+      const t = ms / 1000;
+      rigs.forEach((r) => {
+        r.update(t);
+        r.root.rotation.y = fixed !== null ? Number(fixed) : t * 0.7;
+      });
+      renderer.render(scene, camera);
+      raf = requestAnimationFrame(frame);
+    };
+    raf = requestAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(raf);
+      removeEventListener("resize", size);
+      renderer.dispose();
+    };
+  }, []);
+
+  return <canvas ref={ref} style={{ position: "fixed", inset: 0, width: "100%", height: "100%" }} aria-label="Raikō 3D pose sheet" />;
+}
