@@ -27,3 +27,32 @@ export class RaikoStage implements CharacterSlot {
   private rig: Rig;
   private ghosts: Rig[];
   private bolts = new Bolts();
+  private sparks = new Sparks();
+  private pulses = new Pulses();
+  private flashLight = new THREE.PointLight(COLORS.volt, 0, 0, 0);
+  private shadow: THREE.Mesh;
+  private zs: THREE.Sprite[];
+  private hi: THREE.Sprite;
+  /** "Thank you!" over his head when he bows; shown until clock passes thanksUntil */
+  private thanks: THREE.Sprite;
+  private thanksUntil = 0;
+  private yelp: THREE.Sprite;
+  /** dragging: pendulum hanging from the grab point (world px). theta = swing angle, omega = its rate */
+  private hang = { on: false, pivot: new THREE.Vector3(), theta: 0, omega: 0, lastX: 0, lastV: 0, acc: 0, since: 0, nextWriggle: 0 };
+  private clock = 0;
+  private waving = false;
+  /** skipping back home after being dropped */
+  private walking: { to: Point; resolve: () => void } | null = null;
+
+  private W = 1;
+  private H = 1;
+  private scale = 60;
+  private pos: Point = { x: -999, y: -999 };
+  /** depth (toward camera) and hop (up) offsets in px, tweened during moves */
+  private off = { z: 0, hop: 0, squash: 1 };
+  private move: MoveName = "sleep";
+  private pointer = { x: 0, y: 0, at: -1e9 };
+  /** opening sequence: hidden while "too fast to see"; fury 0..1 drives the charge-up aura */
+  private hidden = false;
+  private fury = { k: 0 };
+  private furyAt = 0;
