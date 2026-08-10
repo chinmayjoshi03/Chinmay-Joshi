@@ -114,3 +114,31 @@ export class RaikoStage implements CharacterSlot {
     window.addEventListener("pointermove", onMove, { passive: true });
     gsap.ticker.add(this.frame);
     this.disposers.push(
+      () => window.removeEventListener("resize", onResize),
+      () => window.removeEventListener("pointermove", onMove),
+      () => gsap.ticker.remove(this.frame),
+    );
+  }
+
+  dispose() {
+    this.disposers.forEach((d) => d());
+    gsap.killTweensOf([this.rig.pose, this.pos, this.off, this.flashLight, this.fury]);
+    this.renderer.dispose();
+  }
+
+  // ── CharacterSlot ──
+  get state() {
+    return this.move;
+  }
+  get position() {
+    return { ...this.pos };
+  }
+
+  place(at: Point) {
+    this.stopWalk();
+    gsap.killTweensOf(this.pos);
+    this.pos = { ...at };
+  }
+
+  sleep() {
+    this.stopWalk();
