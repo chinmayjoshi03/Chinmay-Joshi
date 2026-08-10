@@ -56,3 +56,32 @@ export class RaikoStage implements CharacterSlot {
   private hidden = false;
   private fury = { k: 0 };
   private furyAt = 0;
+  private aura: THREE.Sprite;
+  private disposers: (() => void)[] = [];
+
+  constructor(canvas: HTMLCanvasElement) {
+    this.renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+    this.scene.add(new THREE.HemisphereLight(0xffffff, 0x554466, 1.5));
+    const sun = new THREE.DirectionalLight(0xffffff, 1.9);
+    sun.position.set(-0.6, 1, 0.9);
+    this.scene.add(sun, this.flashLight);
+
+    this.shadow = new THREE.Mesh(
+      new THREE.CircleGeometry(1, 32),
+      new THREE.MeshBasicMaterial({ map: shadowTexture(), transparent: true, depthWrite: false }),
+    );
+    this.shadow.rotation.x = -Math.PI / 2 + 0.38;
+    this.scene.add(this.shadow);
+
+    this.ghosts = [0, 1, 2].map(() => {
+      const g = buildRaiko({ ghost: true });
+      Object.assign(g.pose, POSES.strike);
+      g.setSword(true);
+      g.root.visible = false;
+      this.scene.add(g.root);
+      return g;
+    });
+
+    this.aura = new THREE.Sprite(new THREE.SpriteMaterial({ map: dotTexture(), color: 0xff9a1c, ...GLOW, opacity: 0 }));
