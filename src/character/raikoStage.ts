@@ -85,3 +85,32 @@ export class RaikoStage implements CharacterSlot {
     });
 
     this.aura = new THREE.Sprite(new THREE.SpriteMaterial({ map: dotTexture(), color: 0xff9a1c, ...GLOW, opacity: 0 }));
+    this.scene.add(this.aura);
+
+    this.rig = buildRaiko();
+    this.scene.add(this.rig.root);
+
+    const zTex = textTexture("Z");
+    this.zs = [0, 1, 2].map(() => {
+      const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: zTex, transparent: true, opacity: 0, depthTest: false }));
+      this.scene.add(s);
+      return s;
+    });
+    this.hi = new THREE.Sprite(new THREE.SpriteMaterial({ map: textTexture("Hii!", 46), transparent: true, opacity: 0, depthTest: false }));
+    this.scene.add(this.hi);
+    this.thanks = new THREE.Sprite(new THREE.SpriteMaterial({ map: textTexture("Thank you!", 46, THANKS_W), transparent: true, opacity: 0, depthTest: false }));
+    this.scene.add(this.thanks);
+    this.yelp = new THREE.Sprite(new THREE.SpriteMaterial({ map: textTexture("!!", 70), transparent: true, opacity: 0, depthTest: false }));
+    this.scene.add(this.yelp);
+
+    this.scene.add(this.pulses.group, this.bolts.group, this.sparks.points);
+
+    this.resize();
+    const onResize = () => this.resize();
+    const onMove = (e: PointerEvent) => {
+      this.pointer = { x: e.clientX, y: e.clientY, at: performance.now() };
+    };
+    window.addEventListener("resize", onResize);
+    window.addEventListener("pointermove", onMove, { passive: true });
+    gsap.ticker.add(this.frame);
+    this.disposers.push(
