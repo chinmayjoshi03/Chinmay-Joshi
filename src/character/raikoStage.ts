@@ -178,3 +178,39 @@ export class RaikoStage implements CharacterSlot {
   afterimage(at: Point, dir: 1 | -1) {
     const g = this.ghosts.find((x) => !x.root.visible) ?? this.ghosts[0];
     gsap.killTweensOf(g.ghost!);
+    g.facing = dir;
+    g.root.visible = true;
+    g.root.scale.setScalar(this.scale);
+    g.root.position.copy(this.world(at));
+    g.update(0);
+    gsap.fromTo(g.ghost!, { opacity: 0.75 }, { opacity: 0, duration: 0.32, ease: "power2.out", onComplete: () => void (g.root.visible = false) });
+    this.sparks.burst(this.world({ x: at.x, y: at.y - this.scale * 0.9 }), 8, 420);
+  }
+
+  async rage(toward: Point, ms = 1400) {
+    this.move = "strike"; // no cursor tracking, no "!?" while charging
+    this.rig.facing = toward.x >= this.pos.x ? 1 : -1;
+    this.rig.setFace("angry");
+    this.rig.setSword(false); // sheathed: the draw happens in bigStrike()
+    this.to(RAGE_POSE, 0.25, "power3.out");
+    this.flashLight.color.set(0xff8a1c);
+    gsap.fromTo(this.off, { squash: 1 }, { squash: 0.9, duration: 0.25, ease: "power2.out" });
+    gsap.to(this.fury, { k: 1, duration: (ms / 1000) * 0.75, ease: "power2.in" });
+    fx.thunder.emit(0.5);
+    await wait(ms);
+  }
+
+  async bigStrike(to: Point) {
+    gsap.to(this.off, { squash: 1, duration: 0.2 });
+    await this.dash(to, true);
+    gsap.to(this.fury, { k: 0, duration: 0.6, ease: "power2.out", onComplete: () => void this.flashLight.color.set(COLORS.volt) });
+  }
+
+  private async dash(to: Point, big: boolean) {
+    const from = { ...this.pos };
+    const dir = to.x >= from.x ? 1 : -1;
+    const k = big ? 2 : 1;
+    this.stopWalk();
+    this.rig.facing = dir;
+    this.move = "strike";
+    this.rig.setFace(big ? "angry" : "focus");
