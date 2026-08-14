@@ -142,3 +142,39 @@ export class RaikoStage implements CharacterSlot {
 
   sleep() {
     this.stopWalk();
+    this.move = "sleep";
+    this.rig.setFace("sleep");
+    this.rig.setSword(false);
+    this.to(POSES.sleep, 0.7, "power2.inOut");
+  }
+
+  async ready() {
+    const waking = this.move === "sleep";
+    this.stopWalk();
+    this.move = "ready";
+    this.rig.setFace("calm");
+    this.rig.setSword(false); // calm: the katana stays sheathed at his hip
+    this.to(POSES.ready, MOVE_MS.ready / 1000, "back.out(2.2)");
+    if (waking) {
+      // startled hop with a crackle of static
+      gsap.fromTo(this.off, { hop: 0 }, { hop: this.scale * 0.5, duration: 0.15, ease: "power2.out", yoyo: true, repeat: 1 });
+      this.sparks.burst(this.chest(), 14, 320);
+    }
+    await wait(MOVE_MS.ready);
+  }
+
+  strike(to: Point) {
+    return this.dash(to, false);
+  }
+
+  vanish(hidden: boolean) {
+    this.hidden = hidden;
+    if (!hidden) {
+      this.pulses.ring(this.world(this.pos), this.scale * 2.6);
+      this.sparks.burst(this.chest(), 30, 520);
+    }
+  }
+
+  afterimage(at: Point, dir: 1 | -1) {
+    const g = this.ghosts.find((x) => !x.root.visible) ?? this.ghosts[0];
+    gsap.killTweensOf(g.ghost!);
