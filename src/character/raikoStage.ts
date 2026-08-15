@@ -214,3 +214,39 @@ export class RaikoStage implements CharacterSlot {
     this.rig.facing = dir;
     this.move = "strike";
     this.rig.setFace(big ? "angry" : "focus");
+    this.rig.setSword(true);
+    this.to(POSES.strike, 0.07, "power3.out");
+
+    const lift = this.scale * 0.9;
+    fx.flash.emit(big ? 1 : 0.75);
+    fx.bolt.emit({ from: { x: from.x, y: from.y - lift }, to: { x: to.x, y: to.y - lift }, width: 6 * k, rough: 46 * k });
+    fx.thunder.emit(1);
+    fx.shake.emit(big ? 18 : 6);
+    gsap.fromTo(this.flashLight, { intensity: 5 * k }, { intensity: 0, duration: 0.5 * k, ease: "power2.out" });
+    this.sparks.burst(this.chest(), 26 * k, 520 * k, new THREE.Vector3(-dir, 0.3, 0), 0.8);
+    this.pulses.ring(this.world(from), this.scale * 2.2 * k);
+
+    // the dash arcs toward the viewer, so he swells and foreshortens mid-flight
+    const arc = Math.min(260, Math.hypot(to.x - from.x, to.y - from.y) * 0.35);
+    this.ghosts.forEach((g, i) => {
+      const t = 0.22 + i * 0.24;
+      g.facing = dir;
+      g.root.visible = true;
+      g.root.scale.setScalar(this.scale);
+      g.root.position.copy(this.world({ x: from.x + (to.x - from.x) * t, y: from.y + (to.y - from.y) * t })).setZ(Math.sin(Math.PI * t) * arc);
+      g.update(0);
+      gsap.fromTo(g.ghost!, { opacity: (0.5 - i * 0.1) * (big ? 1.6 : 1) }, { opacity: 0, duration: 0.6, delay: 0.05 + i * 0.05, ease: "power2.out", onComplete: () => void (g.root.visible = false) });
+    });
+
+    const dur = MOVE_MS.strike / 1000;
+    gsap.fromTo(this.off, { z: 0 }, { z: arc, duration: dur / 2, ease: "sine.out", yoyo: true, repeat: 1 });
+    await new Promise<void>((resolve) => {
+      gsap.to(this.pos, { x: to.x, y: to.y, duration: dur, ease: "expo.inOut", onComplete: resolve });
+    });
+
+    const chest = this.chest();
+    this.pulses.slash(chest, this.scale * 2.4 * k * (big ? 1.4 : 1), dir);
+    this.sparks.burst(chest, 40 * k * k, 700 * k, new THREE.Vector3(dir, 0.35, 0.2), 0.7);
+    if (big) this.pulses.ring(this.world(to), this.scale * 6, COLORS.spark, 0.7);
+  }
+
