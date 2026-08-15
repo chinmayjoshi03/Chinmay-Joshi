@@ -250,3 +250,39 @@ export class RaikoStage implements CharacterSlot {
     if (big) this.pulses.ring(this.world(to), this.scale * 6, COLORS.spark, 0.7);
   }
 
+  async land() {
+    this.move = "land";
+    this.to(POSES.land, 0.14, "back.out(2.5)");
+    gsap.fromTo(this.off, { squash: 0.8 }, { squash: 1, duration: 0.35, ease: "elastic.out(1, 0.45)" });
+    const feet = this.world(this.pos);
+    this.pulses.ring(feet, this.scale * 3.4);
+    this.pulses.ring(feet, this.scale * 2.1, COLORS.spark, 0.4);
+    this.sparks.burst(feet, 34, 620, new THREE.Vector3(0, 1, 0), 0.9);
+    await wait(MOVE_MS.land);
+  }
+
+  look(at: Point) {
+    if (this.move === "strike" || this.move === "bow") return;
+    this.stopWalk();
+    this.rig.facing = at.x >= this.pos.x ? 1 : -1;
+    if (this.move === "look") return; // already bashful
+    this.move = "look";
+    this.waving = false;
+    this.rig.setFace("shy");
+    this.rig.setSword(false);
+    this.to(SHY_POSE, 0.4, "power2.out");
+    gsap.fromTo(this.off, { hop: 0 }, { hop: this.scale * 0.12, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1 });
+  }
+
+  wave() {
+    if (this.move !== "look" || this.waving) return;
+    this.waving = true;
+    this.rig.setFace("happy");
+    this.to(WAVE_POSE, 0.3, "back.out(2)");
+    gsap.fromTo(this.hi.scale, { x: 0.01, y: 0.01 }, { x: this.scale * 1.1, y: this.scale * 1.1, duration: 0.35, ease: "back.out(3)" });
+    this.sparks.burst(this.world({ x: this.pos.x + this.scale * 0.8 * this.rig.facing, y: this.pos.y - this.scale * 2.2 }), 10, 260);
+  }
+
+  grab(at: Point) {
+    this.stopWalk();
+    gsap.killTweensOf([this.pos, this.off, this.hang]);
