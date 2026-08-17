@@ -286,3 +286,51 @@ export class RaikoStage implements CharacterSlot {
   grab(at: Point) {
     this.stopWalk();
     gsap.killTweensOf([this.pos, this.off, this.hang]);
+    Object.assign(this.off, { z: 0, hop: 0, squash: 1 });
+    this.hidden = false;
+    this.waving = false;
+    this.move = "strike"; // no cursor tracking / hover reactions while held
+    this.rig.setFace("panic");
+    this.rig.setSword(false);
+    this.to(HANG_POSE, 0.15, "power2.out");
+    const pivot = this.world(at);
+    const feet = this.world(this.pos);
+    const h = this.hang;
+    h.on = true;
+    h.pivot.copy(pivot);
+    // start swinging from wherever his feet were relative to the hand
+    h.theta = THREE.MathUtils.clamp(Math.atan2(feet.x - pivot.x, pivot.y - feet.y), -1.2, 1.2);
+    h.omega = 0;
+    h.lastX = pivot.x;
+    h.lastV = 0;
+    h.acc = 0;
+    h.since = this.clock;
+    h.nextWriggle = this.clock + 0.35;
+    this.sparks.burst(pivot, 12, 300);
+    fx.thunder.emit(0.25);
+  }
+
+  drag(at: Point) {
+    if (this.hang.on) this.hang.pivot.copy(this.world(at));
+  }
+
+  async drop(floor: Point) {
+    const h = this.hang;
+    if (!h.on) return;
+    h.on = false;
+    const fallPx = floor.y - this.pos.y;
+    const t = fallPx > 0 ? Math.max(0.14, Math.sqrt((2 * fallPx) / 2600)) : 0.14;
+    gsap.to(h, { theta: 0, omega: 0, duration: t, ease: "power2.out" });
+    gsap.to(this.rig.pose, { armPZ: 2.6, armNZ: -2.6, legPX: -0.3, legNX: -0.3, duration: t * 0.5 });
+    await new Promise<void>((resolve) => {
+      gsap.to(this.pos, { x: floor.x, y: floor.y, duration: t, ease: "power2.in", onComplete: resolve });
+    });
+    // thud
+    const feet = this.world(this.pos);
+    this.rig.setFace("surprise");
+    this.to(POSES.land, 0.1, "back.out(2.5)");
+    gsap.fromTo(this.off, { squash: 0.62 }, { squash: 1, duration: 0.55, ease: "elastic.out(1, 0.35)" });
+    this.pulses.ring(feet, this.scale * (2 + Math.min(2, fallPx / 300)));
+    this.sparks.burst(feet, 20 + Math.min(30, fallPx / 15), 520, new THREE.Vector3(0, 1, 0), 0.9);
+    fx.shake.emit(Math.min(8, 2 + fallPx / 120));
+    fx.sfx.emit({ name: "drop-thud", volume: Math.min(1, 0.45 + fallPx / 600) });
