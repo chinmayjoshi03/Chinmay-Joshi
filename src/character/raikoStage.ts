@@ -382,3 +382,51 @@ export class RaikoStage implements CharacterSlot {
   private to(pose: Pose, duration: number, ease: string) {
     gsap.to(this.rig.pose, { ...pose, duration, ease, overwrite: true });
   }
+
+  private world(p: Point) {
+    return new THREE.Vector3(p.x - this.W / 2, this.H / 2 - p.y, 0);
+  }
+
+  private chest() {
+    return this.rig.root.position.clone().add(new THREE.Vector3(0, this.scale * 0.9, 0));
+  }
+
+  /** Pendulum: he hangs from the grab point; moving the hand swings him, wriggling kicks the swing. */
+  private swing(time: number, dt: number) {
+    const h = this.hang;
+    const L = this.scale * 1.2; // scruff of the neck → feet
+    const v = (h.pivot.x - h.lastX) / Math.max(dt, 0.001);
+    const a = (v - h.lastV) / Math.max(dt, 0.001);
+    h.lastX = h.pivot.x;
+    h.lastV = v;
+    h.acc += (THREE.MathUtils.clamp(a, -60000, 60000) - h.acc) * 0.5;
+    const g = 2600;
+    const alpha = -(g / L) * Math.sin(h.theta) - (h.acc / L) * Math.cos(h.theta) - 2.6 * h.omega;
+    // trying to escape: a hard wriggle every so often, more desperate the longer he is held
+    if (time > h.nextWriggle) {
+      const desperate = Math.min(1, (time - h.since) / 3);
+      h.nextWriggle = time + 0.45 + Math.random() * (0.9 - desperate * 0.4);
+      h.omega += (Math.random() < 0.5 ? -1 : 1) * (2.5 + desperate * 3.5);
+      gsap.fromTo(this.off, { squash: 0.86 }, { squash: 1, duration: 0.3, ease: "elastic.out(1, 0.4)" });
+      const c = this.chest();
+      const r = () => (Math.random() - 0.5) * this.scale * 1.8;
+      this.bolts.add(c.clone().add(new THREE.Vector3(r(), r(), 0)), c.clone().add(new THREE.Vector3(r(), r(), 0)), 2, 14, 20);
+      this.sparks.burst(c, 6 + Math.round(desperate * 10), 380);
+    }
+    h.omega = THREE.MathUtils.clamp(h.omega + alpha * dt, -14, 14);
+    h.theta = THREE.MathUtils.clamp(h.theta + h.omega * dt, -1.35, 1.35);
+    // feet hang below the hand, along the swing
+    this.pos = { x: h.pivot.x + L * Math.sin(h.theta) + this.W / 2, y: this.H / 2 - (h.pivot.y - L * Math.cos(h.theta)) };
+  }
+
+  /** Limbs while held: arms paddle, legs bicycle-kick, head shakes "no no no". */
+  private flail(time: number, h: RaikoStage["hang"]) {
+    const p = this.rig.pose;
+    const k = 1 + Math.min(1, (time - h.since) / 3) * 0.5;
+    p.armPZ = HANG_POSE.armPZ + Math.sin(time * 13) * 0.45 * k;
+    p.armNZ = HANG_POSE.armNZ + Math.sin(time * 13 + 1.7) * 0.45 * k;
+    p.armPX = HANG_POSE.armPX + Math.sin(time * 9) * 0.5;
+    p.armNX = HANG_POSE.armNX + Math.sin(time * 9 + 2) * 0.5;
+    p.legPX = Math.sin(time * 15) * 0.9 * k;
+    p.legNX = Math.sin(time * 15 + Math.PI) * 0.9 * k;
+    p.headY = Math.sin(time * 8) * 0.45;
