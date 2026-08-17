@@ -334,3 +334,51 @@ export class RaikoStage implements CharacterSlot {
     this.sparks.burst(feet, 20 + Math.min(30, fallPx / 15), 520, new THREE.Vector3(0, 1, 0), 0.9);
     fx.shake.emit(Math.min(8, 2 + fallPx / 120));
     fx.sfx.emit({ name: "drop-thud", volume: Math.min(1, 0.45 + fallPx / 600) });
+    await wait(320);
+    // shakes it off
+    this.rig.setFace("blink");
+    gsap.fromTo(this.rig.pose, { headY: -0.5 }, { headY: 0, duration: 0.45, ease: "elastic.out(1.2, 0.3)" });
+    await wait(260);
+  }
+
+  async bow() {
+    this.stopWalk();
+    this.move = "bow";
+    this.rig.setFace("happy");
+    this.rig.setSword(false);
+    this.to(POSES.bow, 0.35, "power3.out");
+    // "Thank you!" pops up over his head, like "Hii!"
+    this.thanksUntil = this.clock + 2.6;
+    const s = this.scale * 1.1;
+    gsap.fromTo(this.thanks.scale, { x: 0.01, y: 0.01 }, { x: s * (THANKS_W / 128), y: s, duration: 0.4, ease: "back.out(3)" });
+    this.sparks.burst(this.world({ x: this.pos.x, y: this.pos.y - this.scale * 2.4 }), 12, 280);
+    await wait(MOVE_MS.bow);
+  }
+
+  /** Skip back to a point (feet). The hops/legs are animated in frame(). */
+  walk(to: Point) {
+    this.stopWalk();
+    if (this.move === "sleep" || Math.hypot(to.x - this.pos.x, to.y - this.pos.y) < 4) return Promise.resolve();
+    this.move = "ready";
+    this.rig.setFace("happy");
+    this.rig.setSword(false);
+    if (Math.abs(to.x - this.pos.x) > 2) this.rig.facing = to.x >= this.pos.x ? 1 : -1;
+    this.to({ ...POSES.ready, headX: 0.04, yaw: 0.55 }, 0.25, "power2.out");
+    return new Promise<void>((resolve) => {
+      this.walking = { to: { ...to }, resolve };
+    });
+  }
+
+  private stopWalk() {
+    const w = this.walking;
+    if (!w) return;
+    this.walking = null;
+    this.off.hop = 0;
+    this.off.squash = 1;
+    w.resolve();
+  }
+
+  // ── internals ──
+  private to(pose: Pose, duration: number, ease: string) {
+    gsap.to(this.rig.pose, { ...pose, duration, ease, overwrite: true });
+  }
