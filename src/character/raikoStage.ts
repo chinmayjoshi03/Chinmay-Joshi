@@ -430,3 +430,32 @@ export class RaikoStage implements CharacterSlot {
     p.legPX = Math.sin(time * 15) * 0.9 * k;
     p.legNX = Math.sin(time * 15 + Math.PI) * 0.9 * k;
     p.headY = Math.sin(time * 8) * 0.45;
+    p.headZ = Math.sin(time * 5) * 0.12;
+    p.flare = Math.min(1, 0.3 + Math.abs(h.omega) * 0.12);
+  }
+
+  private resize() {
+    this.W = window.innerWidth;
+    this.H = window.innerHeight;
+    this.renderer.setSize(this.W, this.H, false);
+    this.camera.aspect = this.W / this.H;
+    // distance at which one world unit on z=0 is exactly one CSS pixel
+    this.camera.position.set(0, 0, this.H / 2 / Math.tan(THREE.MathUtils.degToRad(FOV / 2)));
+    this.camera.updateProjectionMatrix();
+    const height = Math.min(210, Math.max(118, this.W * 0.13));
+    this.scale = height / MODEL_HEIGHT;
+    this.bolts.setResolution(this.W, this.H);
+  }
+
+  private frame = (time: number, deltaMs: number) => {
+    if (document.hidden) return;
+    const dt = Math.min(0.05, deltaMs / 1000);
+    const { rig, scale } = this;
+    const asleep = this.move === "sleep";
+
+    this.clock = time;
+    const h = this.hang;
+    if (h.on) this.swing(time, dt);
+
+    // happy skipping: a springy hop every step, legs kick, arms swing high, head bobs side to side
+    const w = this.walking;
