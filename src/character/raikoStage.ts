@@ -459,3 +459,32 @@ export class RaikoStage implements CharacterSlot {
 
     // happy skipping: a springy hop every step, legs kick, arms swing high, head bobs side to side
     const w = this.walking;
+    if (w) {
+      const step = scale * 2.6 * dt;
+      const dx = w.to.x - this.pos.x;
+      const dy = w.to.y - this.pos.y;
+      const left = Math.hypot(dx, dy);
+      const phase = time * 7.5; // ~2.4 hops a second
+      const s = Math.sin(phase);
+      const air = Math.abs(s);
+      const p = rig.pose;
+      p.legPX = s * 0.65;
+      p.legNX = -s * 0.65;
+      p.armPX = -0.25 - s * 0.95;
+      p.armNX = -0.25 + s * 0.95;
+      p.armPZ = 0.35 + air * 0.25;
+      p.armNZ = -0.35 - air * 0.25;
+      p.headZ = Math.sin(phase * 0.5) * 0.14;
+      p.lean = -0.06;
+      p.flare = 0.15 + air * 0.25;
+      this.off.hop = air * scale * 0.34;
+      this.off.squash = 0.88 + 0.12 * Math.min(1, air * 3); // a little squish each time he lands
+      if (left <= step) {
+        this.pos = { ...w.to };
+        this.off.hop = 0;
+        this.off.squash = 1;
+        this.walking = null;
+        this.rig.setFace("calm");
+        this.to(POSES.ready, 0.3, "power2.out");
+        w.resolve();
+      } else {
