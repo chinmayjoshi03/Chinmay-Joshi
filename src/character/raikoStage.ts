@@ -488,3 +488,32 @@ export class RaikoStage implements CharacterSlot {
         this.to(POSES.ready, 0.3, "power2.out");
         w.resolve();
       } else {
+        this.pos.x += (dx / left) * step;
+        this.pos.y += (dy / left) * step;
+      }
+    }
+
+    const feet = this.world(this.pos);
+    rig.root.position.set(feet.x, feet.y + this.off.hop, this.off.z);
+    rig.root.visible = this.shadow.visible = !this.hidden;
+    if (h.on) this.shadow.visible = false;
+
+    // charge-up: tremble, streaming coat, orange aura, constant crackle and rising embers
+    const fury = this.hidden ? 0 : this.fury.k;
+    if (fury > 0.01) {
+      rig.root.position.x += (Math.random() - 0.5) * 7 * fury;
+      rig.root.position.y += (Math.random() - 0.5) * 4 * fury;
+      rig.pose.flare = Math.max(rig.pose.flare, 0.75 * fury + Math.sin(time * 40) * 0.08);
+      this.flashLight.intensity = Math.max(this.flashLight.intensity, 3 * fury * (0.7 + 0.3 * Math.sin(time * 37)));
+      if (time > this.furyAt) {
+        this.furyAt = time + 0.05 + (1 - fury) * 0.15;
+        const c = this.chest();
+        const r = () => (Math.random() - 0.5) * scale * 2.6;
+        const a = c.clone().add(new THREE.Vector3(r(), r(), r() * 0.4));
+        this.bolts.add(a, a.clone().add(new THREE.Vector3(r() * 0.7, r() * 0.7, 0)), 2.4, 16, 26);
+        this.sparks.burst(new THREE.Vector3(feet.x + r() * 0.6, feet.y + 4, 20), 5, 520, new THREE.Vector3(0, 1, 0), 0.35);
+      }
+    }
+    this.aura.position.set(feet.x, feet.y + scale * 1.1, -90);
+    this.aura.scale.setScalar(scale * (3.4 + Math.sin(time * 26) * 0.35) * Math.max(fury, 0.001));
+    this.aura.material.opacity = 0.6 * fury;
