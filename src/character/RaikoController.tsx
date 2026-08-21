@@ -29,3 +29,33 @@ const sfx = (name: SfxName, volume?: number) => fx.sfx.emit({ name, volume });
 
 /** Wraps a character so each move plays its sound effect (works for both the 3D and 2D Raikō). */
 function withSfx(slot: CharacterSlot): CharacterSlot {
+  const sounds: Partial<Record<keyof CharacterSlot, [SfxName, number]>> = {
+    strike: ["dash", 0.8],
+    land: ["land", 0.7],
+    bigStrike: ["finisher", 1],
+    rage: ["rage-charge", 0.8],
+    sleep: ["sleep", 0.5],
+    look: ["shy", 0.6],
+    wave: ["wave-hi", 0.7],
+    grab: ["grab", 0.8],
+    bow: ["bow", 0.8],
+  };
+  return new Proxy(slot, {
+    get(target, key: keyof CharacterSlot) {
+      const value = Reflect.get(target, key);
+      if (typeof value !== "function") return value;
+      return (...args: unknown[]) => {
+        const sound = sounds[key];
+        if (sound) sfx(...sound);
+        // waking from sleep gets its own little startle
+        if (key === "ready" && target.state === "sleep") sfx("wake", 0.7);
+        return (value as (...a: unknown[]) => unknown).apply(target, args);
+      };
+    },
+  });
+}
+
+export function RaikoController() {
+  const slot = useRef<CharacterSlot>(null);
+  const [mode, setMode] = useState<"2d" | "3d" | null>(null);
+
