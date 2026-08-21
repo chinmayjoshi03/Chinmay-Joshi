@@ -517,3 +517,32 @@ export class RaikoStage implements CharacterSlot {
     this.aura.position.set(feet.x, feet.y + scale * 1.1, -90);
     this.aura.scale.setScalar(scale * (3.4 + Math.sin(time * 26) * 0.35) * Math.max(fury, 0.001));
     this.aura.material.opacity = 0.6 * fury;
+    rig.root.scale.set(scale / Math.sqrt(this.off.squash), scale * this.off.squash, scale / Math.sqrt(this.off.squash));
+
+    // head follows the cursor (or the viewer when the cursor has been still)
+    let yaw = 0;
+    let pitch = 0;
+    if (!this.walking && (this.move === "ready" || this.move === "look" || this.move === "land")) {
+      const body = rig.pose.yaw * rig.facing;
+      const fresh = performance.now() - this.pointer.at < 2500;
+      const dx = fresh ? this.pointer.x - this.pos.x : 0;
+      const dy = fresh ? this.pos.y - scale * 1.7 - this.pointer.y : 0;
+      yaw = THREE.MathUtils.clamp(Math.atan2(dx, 380) - body, -1.1, 1.1);
+      pitch = THREE.MathUtils.clamp(-Math.atan2(dy, 520), -0.45, 0.4);
+    }
+    // shy: only half-looks at you, and sways a little; waving: the hand swings
+    const shy = this.move === "look";
+    if (shy) {
+      yaw *= 0.5;
+      pitch = pitch * 0.4 + 0.08;
+    }
+    if (shy && this.waving) rig.pose.armPZ = WAVE_POSE.armPZ + Math.sin(time * 11) * 0.32;
+    else if (shy) rig.pose.headZ = SHY_POSE.headZ + Math.sin(time * 2.4) * 0.06;
+    if (!shy) this.waving = false;
+    const ease = 1 - Math.pow(0.001, dt);
+    rig.look.yaw += (yaw - rig.look.yaw) * ease;
+    rig.look.pitch += (pitch - rig.look.pitch) * ease;
+    if (h.on) this.flail(time, h);
+    rig.update(time, asleep);
+    rig.root.rotation.z = h.theta;
+    this.yelp.position.set(feet.x - Math.sin(h.theta) * scale * 2.2 + scale * 0.9 * rig.facing, feet.y + Math.cos(h.theta) * scale * 2.2 + Math.sin(time * 18) * 3, 40);
