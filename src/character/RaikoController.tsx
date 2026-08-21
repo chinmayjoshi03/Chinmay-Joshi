@@ -59,3 +59,33 @@ export function RaikoController() {
   const slot = useRef<CharacterSlot>(null);
   const [mode, setMode] = useState<"2d" | "3d" | null>(null);
 
+  useEffect(() => setMode(canUse3D() ? "3d" : "2d"), []);
+
+  useEffect(() => {
+    if (!mode || !slot.current) return;
+    const raiko = withSfx(slot.current);
+
+    let current = 0;
+    let busy = false;
+    let queued: number | null = null;
+    let idleTimer = 0;
+    let hovering = false;
+    // dragging: press on him, move past a few px to pick him up
+    let press: { x: number; y: number; id: number } | null = null;
+    let dragging = false;
+    let suppressClick = false;
+    const onHim = (x: number, y: number) => {
+      const p = raiko.position;
+      return Math.abs(x - p.x) < 80 && y < p.y + 10 && y > p.y - 190;
+    };
+    const setCursor = (c: string) => {
+      document.documentElement.style.cursor = c;
+    };
+    let waveTimer = 0;
+    let entered = false;
+    let clicks: number[] = [];
+
+    const anchorPoint = (index: number): Point => {
+      const a = sections[index].anchor;
+      const mobile = window.innerWidth < 720;
+      // on phones keep him small in the bottom corners
