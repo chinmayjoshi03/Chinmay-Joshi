@@ -546,3 +546,31 @@ export class RaikoStage implements CharacterSlot {
     rig.update(time, asleep);
     rig.root.rotation.z = h.theta;
     this.yelp.position.set(feet.x - Math.sin(h.theta) * scale * 2.2 + scale * 0.9 * rig.facing, feet.y + Math.cos(h.theta) * scale * 2.2 + Math.sin(time * 18) * 3, 40);
+    this.yelp.scale.setScalar(scale * 0.8);
+    this.yelp.material.opacity += ((h.on ? 1 : 0) - this.yelp.material.opacity) * 0.25;
+
+    this.shadow.position.set(feet.x, feet.y, 0);
+    const lifted = 1 - Math.min(0.6, this.off.hop / (scale * 2)) - (this.move === "strike" ? 0.35 : 0);
+    this.shadow.scale.set(scale * 1.05 * lifted, scale * 0.75 * lifted, 1);
+    this.flashLight.position.set(feet.x, feet.y + scale, 260);
+
+    // "Z z" glyphs drift up while he sleeps
+    const head = new THREE.Vector3(feet.x + scale * 0.5, feet.y + scale * 1.5, 40);
+    this.zs.forEach((z, i) => {
+      const q = (time / 2.4 + i / 3) % 1;
+      z.position.set(head.x + q * scale * 0.9 + Math.sin(q * 6 + i) * 6, head.y + q * scale * 1.3, 40 + q * 60);
+      z.scale.setScalar(scale * (0.3 + q * 0.35));
+      const target = asleep ? Math.sin(Math.PI * q) : 0;
+      z.material.opacity += (target - z.material.opacity) * 0.15;
+    });
+    this.hi.position.set(feet.x + scale * 1.05 * rig.facing, feet.y + scale * 2.65 + Math.sin(time * 5) * 3, 40);
+    this.hi.material.opacity += ((this.waving ? 1 : 0) - this.hi.material.opacity) * 0.2;
+    this.thanks.position.set(feet.x, feet.y + scale * 2.95 + Math.sin(time * 4) * 3, 40);
+    this.thanks.material.opacity += ((time < this.thanksUntil ? 1 : 0) - this.thanks.material.opacity) * 0.15;
+
+    this.bolts.update(dt);
+    this.sparks.update(dt);
+    this.pulses.update(dt);
+    this.renderer.render(this.scene, this.camera);
+  };
+}
