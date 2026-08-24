@@ -89,3 +89,34 @@ export function RaikoController() {
       const a = sections[index].anchor;
       const mobile = window.innerWidth < 720;
       // on phones keep him small in the bottom corners
+      const x = mobile && a.x !== 0.5 ? (a.x < 0.5 ? 0.18 : 0.82) : a.x;
+      return { x: window.innerWidth * x, y: window.innerHeight * (mobile ? 0.97 : a.y) };
+    };
+
+    // he walks back home after being dragged away; no idle napping mid-walk
+    let homing = false;
+    let homeRun = 0;
+    const resetIdle = () => {
+      window.clearTimeout(idleTimer);
+      idleTimer = window.setTimeout(() => {
+        if (!busy && !hovering && !homing) {
+          raiko.sleep();
+          audio.duck(true);
+        }
+      }, MOVE_MS.idleBeforeSleep);
+    };
+
+    /** His place is where he first lands after the opening slashes (the hero anchor). Skip back there and nap. */
+    const walkHome = async () => {
+      if (!raiko.walk) return;
+      const run = ++homeRun;
+      const home = anchorPoint(0);
+      homing = true;
+      await raiko.walk(home);
+      if (run !== homeRun) return;
+      homing = false;
+      const p = raiko.position;
+      const arrived = Math.hypot(p.x - home.x, p.y - home.y) < 4;
+      // interrupted (scroll, hover, grabbed again)? the normal handlers take over from here
+      if (!arrived || busy || hovering || dragging || raiko.state !== "ready") return resetIdle();
+      raiko.sleep();
