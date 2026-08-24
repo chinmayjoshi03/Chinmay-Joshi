@@ -180,3 +180,64 @@ export function RaikoController() {
     };
 
     const reduce = prefersReducedMotion();
+    const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+    const vp = (x: number, y: number): Point => ({ x: window.innerWidth * x, y: window.innerHeight * y });
+
+    // initial placement: asleep, centre stage for the opening (or straight in the hero)
+    raiko.place(reduce ? anchorPoint(0) : vp(0.5, 0.66));
+    raiko.sleep();
+
+    // active section = last one whose top has passed 55% of the viewport.
+    // Reads live rects, so it stays correct around the pinned Skills section.
+    let shown = -1;
+    const checkSection = () => {
+      const line = window.innerHeight * 0.55;
+      let idx = 0;
+      sections.forEach((s, i) => {
+        const el = document.getElementById(s.id);
+        if (el && el.getBoundingClientRect().top <= line) idx = i;
+      });
+      if (idx !== shown) {
+        shown = idx;
+        document.documentElement.dataset.section = sections[idx].id;
+      }
+      if (entered && idx !== current) void goTo(idx);
+    };
+    checkSection();
+
+    // Opening: alone and asleep on a blank screen, he wakes and cuts the screen apart,
+    // then the hero (Hero.tsx) reveals the name and fires "kaminari:ready".
+    const opening = async () => {
+      if (reduce) {
+        window.dispatchEvent(new Event("kaminari:reveal"));
+        return;
+      }
+      busy = true;
+      await wait(1500);
+      await raiko.ready();
+      await wait(280);
+      const lift = Math.min(70, window.innerWidth * 0.05); // cut through the chest, not the feet
+      const cut = (from: Point, to: Point, kind?: "slash" | "flurry" | "finisher") =>
+        fx.introCut.emit({ from: { x: from.x, y: from.y - lift }, to: { x: to.x, y: to.y - lift }, kind });
+
+      // two slashes you can follow…
+      for (const to of [vp(0.16, 0.36), vp(0.84, 0.56)]) {
+        cut(raiko.position, to);
+        await raiko.strike(to);
+        await wait(110);
+      }
+
+      // …then he is too fast to see: cuts land faster and faster, with only afterimages left behind
+      if (raiko.vanish && raiko.afterimage) {
+        raiko.vanish(true);
+        let gap = 240;
+        for (let i = 0; i < 20; i++) {
+          const c = vp(0.15 + Math.random() * 0.7, 0.22 + Math.random() * 0.6);
+          const ang = Math.random() * Math.PI;
+          const d = { x: Math.cos(ang) * 100, y: Math.sin(ang) * 100 };
+          fx.introCut.emit({ from: c, to: { x: c.x + d.x, y: c.y + d.y }, kind: "flurry" });
+          sfx("flurry-cut", 0.5 + Math.random() * 0.3);
+          raiko.afterimage({ x: c.x, y: c.y + lift }, d.x >= 0 ? 1 : -1);
+          if (i % 3 === 0) fx.thunder.emit(0.35);
+          if (i % 4 === 0) fx.shake.emit(3);
+          await wait(gap);
