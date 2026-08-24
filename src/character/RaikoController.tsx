@@ -120,3 +120,63 @@ export function RaikoController() {
       // interrupted (scroll, hover, grabbed again)? the normal handlers take over from here
       if (!arrived || busy || hovering || dragging || raiko.state !== "ready") return resetIdle();
       raiko.sleep();
+      audio.duck(true);
+    };
+
+    const wake = async () => {
+      if (raiko.state === "sleep") {
+        audio.duck(false);
+        await raiko.ready();
+      }
+    };
+
+    const goTo = async (index: number) => {
+      if (busy) {
+        queued = index;
+        return;
+      }
+      busy = true;
+      hovering = false;
+      homing = false;
+      window.clearTimeout(waveTimer);
+      current = index;
+      await wake();
+      await raiko.strike(anchorPoint(index));
+      await raiko.land();
+      await raiko.ready();
+      busy = false;
+      resetIdle();
+      if (queued !== null && queued !== current) {
+        const next = queued;
+        queued = null;
+        void goTo(next);
+      } else {
+        queued = null;
+        // already scrolled all the way down while he was on his way? thank them now
+        if (index === sections.length - 1 && atBottom()) void thankYou();
+      }
+    };
+
+    // The very end of the page: at bottom centre he bows, with "Thank you!" over his head.
+    const atBottom = () => window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 8;
+    let wasAtBottom = false;
+    const thankYou = async () => {
+      if (busy || dragging || current !== sections.length - 1) return;
+      busy = true;
+      hovering = false;
+      homing = false;
+      window.clearTimeout(waveTimer);
+      await wake();
+      await raiko.bow();
+      await new Promise<void>((r) => setTimeout(r, 1200)); // hold the bow while the thanks shows
+      await raiko.ready();
+      busy = false;
+      resetIdle();
+      if (queued !== null && queued !== current) {
+        const next = queued;
+        queued = null;
+        void goTo(next);
+      } else queued = null;
+    };
+
+    const reduce = prefersReducedMotion();
