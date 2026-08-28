@@ -241,3 +241,33 @@ export function RaikoController() {
           if (i % 3 === 0) fx.thunder.emit(0.35);
           if (i % 4 === 0) fx.shake.emit(3);
           await wait(gap);
+          gap = Math.max(40, gap * 0.85);
+        }
+      } else {
+        for (const to of [vp(0.18, 0.8), vp(0.5, 0.3)]) {
+          cut(raiko.position, to);
+          await raiko.strike(to);
+        }
+      }
+
+      // silence — the screen is crazed with cuts — then he reappears, furious, and charges one last slash
+      await wait(480);
+      const start = vp(0.8, 0.44);
+      const end = vp(0.18, 0.8);
+      raiko.place(start);
+      raiko.vanish?.(false);
+      // he chants his technique while charging; the slash lands as the line ends
+      // (the chant file ends in ~1s of echo, which rings on over the slash)
+      sfx("intro-chant", 1);
+      const chantMs = audio.enabled ? Math.max(1500, (audio.duration("intro-chant") - 1) * 1000) : 1500;
+      fx.chant.emit({ ms: chantMs });
+      if (raiko.rage) await raiko.rage(end, chantMs);
+      else await raiko.ready();
+      cut(start, end, "finisher");
+      await (raiko.bigStrike ? raiko.bigStrike(end) : raiko.strike(end));
+      await raiko.land();
+      // the beat before it falls
+      await wait(260);
+      fx.flash.emit(1);
+      fx.thunder.emit(1);
+      fx.shake.emit(14);
