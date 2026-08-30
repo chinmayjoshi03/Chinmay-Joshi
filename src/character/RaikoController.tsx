@@ -271,3 +271,34 @@ export function RaikoController() {
       fx.flash.emit(1);
       fx.thunder.emit(1);
       fx.shake.emit(14);
+      fx.introSplit.emit(undefined);
+      sfx("curtain-break", 0.9);
+      await wait(1050); // let the pieces clear before the name comes in
+      await raiko.strike(anchorPoint(0));
+      await raiko.land();
+      window.dispatchEvent(new Event("kaminari:reveal"));
+      await raiko.ready();
+    };
+    window.addEventListener("kaminari:entered", opening, { once: true });
+
+    const onEnter = () => {
+      entered = true;
+      busy = false;
+      resetIdle();
+      checkSection();
+    };
+    window.addEventListener("kaminari:ready", onEnter);
+
+    const onScroll = () => {
+      checkSection();
+      if (!entered) return;
+      const bottom = atBottom();
+      const arrived = bottom && !wasAtBottom;
+      wasAtBottom = bottom;
+      if (arrived && current === sections.length - 1 && !busy) {
+        void thankYou();
+        return;
+      }
+      if (raiko.state === "sleep" && !busy) {
+        busy = true;
+        void wake().then(() => {
