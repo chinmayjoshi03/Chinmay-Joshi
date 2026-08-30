@@ -302,3 +302,33 @@ export function RaikoController() {
       if (raiko.state === "sleep" && !busy) {
         busy = true;
         void wake().then(() => {
+          busy = false;
+          resetIdle();
+        });
+      } else resetIdle();
+    };
+
+    const onDown = (e: PointerEvent) => {
+      if (!entered || busy || dragging || !raiko.grab || e.button !== 0) return;
+      if (!onHim(e.clientX, e.clientY)) return;
+      press = { x: e.clientX, y: e.clientY, id: e.pointerId };
+      e.preventDefault(); // no text selection while grabbing
+    };
+
+    const startDrag = (e: PointerEvent) => {
+      dragging = true;
+      busy = true;
+      hovering = false;
+      homing = false;
+      window.clearTimeout(waveTimer);
+      window.clearTimeout(idleTimer);
+      audio.duck(false);
+      try {
+        document.documentElement.setPointerCapture(e.pointerId);
+      } catch {
+        /* capture is a nicety */
+      }
+      document.documentElement.classList.add("is-dragging");
+      setCursor("grabbing");
+      raiko.grab!({ x: e.clientX, y: e.clientY });
+    };
