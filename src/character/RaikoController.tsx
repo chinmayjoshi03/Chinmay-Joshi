@@ -362,3 +362,34 @@ export function RaikoController() {
       const t = e.touches[0];
       if (entered && !busy && raiko.grab && t && onHim(t.clientX, t.clientY)) e.preventDefault();
     };
+    const onTouchMove = (e: TouchEvent) => {
+      if (press || dragging) e.preventDefault();
+    };
+
+    const onMove = (e: PointerEvent) => {
+      if (press && !dragging && e.pointerId === press.id && Math.hypot(e.clientX - press.x, e.clientY - press.y) > 6) startDrag(e);
+      if (dragging) {
+        raiko.drag?.({ x: e.clientX, y: e.clientY });
+        return;
+      }
+      if (!entered || busy) return;
+      resetIdle();
+      if (raiko.state === "sleep") return;
+      const over = onHim(e.clientX, e.clientY);
+      if (raiko.grab) setCursor(over ? "grab" : "");
+      if (over && !hovering) {
+        hovering = true;
+        raiko.look({ x: e.clientX, y: e.clientY });
+        window.clearTimeout(waveTimer);
+        waveTimer = window.setTimeout(() => {
+          if (hovering && !busy && raiko.state === "look") raiko.wave?.();
+        }, 1300);
+      } else if (!over && hovering) unhover();
+    };
+    const unhover = () => {
+      if (!hovering) return;
+      hovering = false;
+      if (!dragging) setCursor("");
+      window.clearTimeout(waveTimer);
+      if (raiko.state === "look" && !busy) void raiko.ready();
+    };
