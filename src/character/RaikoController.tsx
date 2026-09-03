@@ -332,3 +332,33 @@ export function RaikoController() {
       setCursor("grabbing");
       raiko.grab!({ x: e.clientX, y: e.clientY });
     };
+
+    const onUp = () => {
+      press = null;
+      if (!dragging) return;
+      dragging = false;
+      suppressClick = true;
+      document.documentElement.classList.remove("is-dragging");
+      setCursor("");
+      void (async () => {
+        const p = raiko.position;
+        const floor = { x: Math.min(window.innerWidth - 50, Math.max(50, p.x)), y: anchorPoint(current).y };
+        await raiko.drop!(floor);
+        await raiko.ready();
+        busy = false;
+        if (queued !== null && queued !== current) {
+          const next = queued;
+          queued = null;
+          void goTo(next);
+        } else {
+          queued = null;
+          void walkHome();
+        }
+      })();
+    };
+
+    // keep a finger-drag from scrolling the page
+    const onTouchStart = (e: TouchEvent) => {
+      const t = e.touches[0];
+      if (entered && !busy && raiko.grab && t && onHim(t.clientX, t.clientY)) e.preventDefault();
+    };
