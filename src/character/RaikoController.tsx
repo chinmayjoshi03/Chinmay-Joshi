@@ -393,3 +393,33 @@ export function RaikoController() {
       window.clearTimeout(waveTimer);
       if (raiko.state === "look" && !busy) void raiko.ready();
     };
+    const onLeave = () => unhover();
+    document.documentElement.addEventListener("pointerleave", onLeave);
+
+    const onClick = async (e: MouseEvent) => {
+      if (suppressClick) {
+        suppressClick = false;
+        return;
+      }
+      if (!entered || busy) return;
+      const p = raiko.position;
+      const hit = Math.abs(e.clientX - p.x) < 90 && e.clientY < p.y && e.clientY > p.y - 150;
+      if (!hit) return;
+      const now = performance.now();
+      clicks = [...clicks.filter((t) => now - t < 1200), now];
+      if (clicks.length < 3) {
+        await wake();
+        return;
+      }
+      // secret move: cross the whole screen and back
+      clicks = [];
+      busy = true;
+      await wake();
+      const home = anchorPoint(current);
+      const far = { x: home.x < window.innerWidth / 2 ? window.innerWidth * 0.88 : window.innerWidth * 0.12, y: home.y };
+      fx.flash.emit(1);
+      await raiko.strike(far);
+      await raiko.strike(home);
+      fx.bolt.emit({ from: { x: window.innerWidth * 0.5, y: 0 }, to: { x: home.x, y: home.y - 40 }, width: 9, rough: 70 });
+      await raiko.land();
+      await raiko.ready();
