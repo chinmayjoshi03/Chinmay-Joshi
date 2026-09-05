@@ -453,3 +453,33 @@ export function RaikoController() {
     window.addEventListener("raiko:bow", onBow);
     window.addEventListener("resize", onResize);
 
+    return () => {
+      window.removeEventListener("kaminari:entered", opening);
+      window.removeEventListener("kaminari:ready", onEnter);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      setCursor("");
+      window.removeEventListener("click", onClick);
+      window.removeEventListener("raiko:bow", onBow);
+      window.removeEventListener("resize", onResize);
+      window.clearTimeout(idleTimer);
+      window.clearTimeout(waveTimer);
+      document.documentElement.removeEventListener("pointerleave", onLeave);
+    };
+  }, [mode]);
+
+  if (mode === "3d") return <Raiko3D ref={slot} />;
+  if (mode === "2d")
+    return (
+      <>
+        <RaikoSprites />
+        <Raiko2D ref={slot} />
+      </>
+    );
+  return null;
+}
