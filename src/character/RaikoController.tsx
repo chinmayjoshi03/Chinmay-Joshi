@@ -423,3 +423,33 @@ export function RaikoController() {
       fx.bolt.emit({ from: { x: window.innerWidth * 0.5, y: 0 }, to: { x: home.x, y: home.y - 40 }, width: 9, rough: 70 });
       await raiko.land();
       await raiko.ready();
+      busy = false;
+      resetIdle();
+    };
+
+    const onBow = async () => {
+      if (busy) return;
+      busy = true;
+      fx.thunder.emit(0.8);
+      fx.flash.emit(0.4);
+      await raiko.bow();
+      await raiko.ready();
+      busy = false;
+      resetIdle();
+    };
+
+    const onResize = () => {
+      if (!busy) raiko.place(anchorPoint(current));
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerdown", onDown);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+    window.addEventListener("touchstart", onTouchStart, { passive: false });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("click", onClick);
+    window.addEventListener("raiko:bow", onBow);
+    window.addEventListener("resize", onResize);
+
