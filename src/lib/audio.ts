@@ -41,3 +41,46 @@ class AudioEngine {
 
   subscribe(fn: Listener) {
     this.listeners.add(fn);
+    return () => {
+      this.listeners.delete(fn);
+    };
+  }
+
+  private notify() {
+    this.listeners.forEach((fn) => fn(this.enabled));
+  }
+
+  /** Must be called from a click/tap handler. */
+  setEnabled(on: boolean, intro = false) {
+    this.enabled = on;
+    try {
+      localStorage.setItem(STORE_KEY, on ? "on" : "off");
+    } catch {
+      /* storage blocked: fine */
+    }
+    if (on) this.start(intro);
+    else this.stop();
+    this.notify();
+  }
+
+  private ensureCtx() {
+    if (this.ctx) return this.ctx;
+    const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    this.ctx = new Ctx();
+    this.master = this.ctx.createGain();
+    this.master.gain.value = 0.8;
+    this.master.connect(this.ctx.destination);
+    this.musicGain = this.ctx.createGain();
+    this.musicGain.gain.value = 0.5;
+    this.musicGain.connect(this.master);
+    return this.ctx;
+  }
+
+  private loads = new Map<SfxName, Promise<void>>();
+  private loadOne(name: SfxName) {
+    let p = this.loads.get(name);
+    if (!p) {
+      const ctx = this.ctx!;
+      p = (async () => {
+        for (const ext of SFX_EXTS) {
+          try {
