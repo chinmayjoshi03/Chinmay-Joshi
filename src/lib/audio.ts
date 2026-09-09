@@ -84,3 +84,45 @@ class AudioEngine {
       p = (async () => {
         for (const ext of SFX_EXTS) {
           try {
+            const res = await fetch(`/audio/${name}.${ext}`);
+            if (!res.ok) continue;
+            this.buffers.set(name, await ctx.decodeAudioData(await res.arrayBuffer()));
+            return;
+          } catch {
+            /* missing or undecodable: try the next format */
+          }
+        }
+      })();
+      this.loads.set(name, p);
+    }
+    return p;
+  }
+
+  /** Fetch and decode every sound effect once. */
+  private loadSfx() {
+    this.loading ??= Promise.all(SFX_NAMES.map((n) => this.loadOne(n))).then(() => undefined);
+    return this.loading;
+  }
+
+  /** Length of a loaded effect in seconds (0 if not loaded). */
+  duration(name: SfxName) {
+    return this.buffers.get(name)?.duration ?? 0;
+  }
+
+  play(name: SfxName, volume = 1) {
+    if (!this.enabled || !this.ctx || !this.master) return;
+    const buf = this.buffers.get(name);
+    if (!buf) {
+      if (name === "thunder") this.synthThunder(volume);
+      return;
+    }
+    this.source(buf, volume);
+  }
+
+  private source(buf: AudioBuffer, volume: number) {
+    const src = this.ctx!.createBufferSource();
+    src.buffer = buf;
+    const g = this.ctx!.createGain();
+    g.gain.value = volume;
+    src.connect(g).connect(this.master!);
+    src.start();
