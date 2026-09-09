@@ -126,3 +126,31 @@ class AudioEngine {
     g.gain.value = volume;
     src.connect(g).connect(this.master!);
     src.start();
+    return { src, gain: g };
+  }
+
+  // ── opening: a storm bed under the action, then the theme comes in with the name ──
+  /** True from "Enter with sound" until the hero name is revealed: the music waits. */
+  private inIntro = false;
+  private bed: { src: AudioBufferSourceNode; gain: GainNode } | null = null;
+
+  private async startIntro() {
+    this.inIntro = true;
+    await this.loadOne("intro-ambience");
+    const buf = this.buffers.get("intro-ambience");
+    if (!this.enabled || !this.inIntro || !buf || this.bed) return;
+    this.bed = this.source(buf, 0.75);
+    this.bed.src.onended = () => (this.bed = null);
+  }
+
+  /** The name is revealed: fade the storm out and bring the theme in. */
+  endIntro() {
+    if (!this.inIntro) return;
+    this.inIntro = false;
+    this.fadeBed(1.2);
+    if (this.enabled) this.startMusic();
+  }
+
+  private fadeBed(seconds: number) {
+    if (!this.bed || !this.ctx) return;
+    const { src, gain } = this.bed;
