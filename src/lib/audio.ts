@@ -182,3 +182,31 @@ class AudioEngine {
     else if (!this.inIntro) this.startMusic();
   }
 
+  private musicStarting = false;
+  private startMusic() {
+    if (this.howl) {
+      if (!this.howl.playing()) this.howl.play();
+      return;
+    }
+    if (this.musicStarting) return;
+    this.musicStarting = true;
+    void this.findTheme().then((src) => {
+      this.musicStarting = false;
+      if (!this.enabled || this.inIntro) return;
+      if (!src) return this.startDrums();
+      this.howl = new Howl({
+        src: [src],
+        loop: true,
+        volume: 0.45,
+        html5: true,
+        onloaderror: () => {
+          this.howl = null;
+          if (this.enabled) this.startDrums();
+        },
+      });
+      this.howl.play();
+    });
+  }
+
+  private stop() {
+    this.fadeBed(0.3);
