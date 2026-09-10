@@ -238,3 +238,43 @@ class AudioEngine {
       }
     }, 50);
   }
+
+  private stopDrums() {
+    if (this.drumTimer !== null) window.clearInterval(this.drumTimer);
+    this.drumTimer = null;
+  }
+
+  private drum(t: number, vel: number, accent: boolean) {
+    const ctx = this.ctx!;
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(accent ? 110 : 150, t);
+    osc.frequency.exponentialRampToValueAtTime(42, t + 0.35);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.9 * vel, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
+    osc.connect(g).connect(this.musicGain!);
+    osc.start(t);
+    osc.stop(t + 0.55);
+    // skin slap
+    const n = this.noise(0.06);
+    const hp = ctx.createBiquadFilter();
+    hp.type = "bandpass";
+    hp.frequency.value = 1800;
+    const ng = ctx.createGain();
+    ng.gain.setValueAtTime(0.25 * vel, t);
+    ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+    n.connect(hp).connect(ng).connect(this.musicGain!);
+    n.start(t);
+  }
+
+  private noise(seconds: number) {
+    const ctx = this.ctx!;
+    const len = Math.floor(ctx.sampleRate * seconds);
+    const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    return src;
