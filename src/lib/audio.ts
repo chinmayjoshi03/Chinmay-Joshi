@@ -210,3 +210,31 @@ class AudioEngine {
 
   private stop() {
     this.fadeBed(0.3);
+    this.howl?.pause();
+    this.stopDrums();
+  }
+
+  /** Lower the music while Raikō sleeps. */
+  duck(sleeping: boolean) {
+    const level = sleeping ? 0.18 : 0.5;
+    if (this.howl) this.howl.fade(this.howl.volume(), sleeping ? 0.15 : 0.45, 800);
+    if (this.musicGain && this.ctx) this.musicGain.gain.setTargetAtTime(level, this.ctx.currentTime, 0.4);
+  }
+
+  // ── synthesized placeholder music: a slow taiko pattern ──
+  private startDrums() {
+    if (this.drumTimer !== null || !this.ctx) return;
+    const bpm = 84;
+    const step = 60 / bpm / 2; // eighth notes
+    const pattern = [1, 0, 0, 0.5, 0.8, 0, 0.4, 0, 1, 0, 0.5, 0, 0.8, 0.4, 0.6, 0.3];
+    this.nextBeat = this.ctx.currentTime + 0.1;
+    this.drumTimer = window.setInterval(() => {
+      const ctx = this.ctx!;
+      while (this.nextBeat < ctx.currentTime + 0.2) {
+        const v = pattern[this.beat % pattern.length];
+        if (v > 0) this.drum(this.nextBeat, v, this.beat % 8 === 0);
+        this.nextBeat += step;
+        this.beat++;
+      }
+    }, 50);
+  }
