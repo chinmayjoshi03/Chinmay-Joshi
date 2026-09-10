@@ -154,3 +154,31 @@ class AudioEngine {
   private fadeBed(seconds: number) {
     if (!this.bed || !this.ctx) return;
     const { src, gain } = this.bed;
+    const t = this.ctx.currentTime;
+    gain.gain.setValueAtTime(gain.gain.value, t);
+    gain.gain.linearRampToValueAtTime(0, t + seconds);
+    src.stop(t + seconds + 0.05);
+    this.bed = null;
+  }
+
+  /** First existing theme file, looked up in the same order as the effects. */
+  private async findTheme() {
+    for (const ext of SFX_EXTS) {
+      try {
+        const res = await fetch(`/audio/theme.${ext}`, { method: "HEAD" });
+        if (res.ok) return `/audio/theme.${ext}`;
+      } catch {
+        /* try the next one */
+      }
+    }
+    return null;
+  }
+
+  private start(intro = false) {
+    const ctx = this.ensureCtx();
+    void ctx.resume();
+    void this.loadSfx();
+    if (intro) void this.startIntro();
+    else if (!this.inIntro) this.startMusic();
+  }
+
