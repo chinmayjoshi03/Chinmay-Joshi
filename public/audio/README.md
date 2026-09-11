@@ -17,3 +17,21 @@ Keep effects short and trimmed (no silence at the start), so they land exactly o
 | `dash.wav` | Raikō dashes / slashes to a new spot (opening slashes, moving between sections) |
 | `land.wav` | He lands after a dash |
 | `flurry-cut.wav` | Opening: each of the ~20 super-fast cuts across the screen (plays many times quickly, keep it very short) |
+| `rage-charge.wav` | Opening: the angry charge-up aura before the finisher |
+| `finisher.wav` | Opening: the giant finishing slash |
+| `curtain-break.wav` | Opening: the cut-up screen shatters and falls away |
+| `name-reveal.wav` | Your name is cut into the hero with lightning |
+| `wake.wav` | He wakes up from sleeping |
+| `sleep.wav` | He dozes off after you stop moving for a while |
+| `shy.wav` | You hover the cursor on him (he gets shy) |
+| `wave-hi.wav` | You keep hovering: he waves "Hi!" |
+| `grab.wav` | You pick him up by dragging |
+| `drop-thud.wav` | You let go and he hits the floor (louder from higher up) |
+| `bow.wav` | He bows (contact links) |
+
+## Music
+
+`theme` (any of `.mp3`, `.m4a`, `.ogg`, `.wav`): background music, looped. With the opening, it comes in when your name is revealed.
+Looked up in the same order as the effects (`.wav` first). Until one exists a synthesized drum loop plays.
+
+`intro-chant.yours.wav` is your earlier 17s recording, kept for reference; the site doesn't load it.
