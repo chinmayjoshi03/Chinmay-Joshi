@@ -278,3 +278,42 @@ class AudioEngine {
     const src = ctx.createBufferSource();
     src.buffer = buf;
     return src;
+  }
+
+  /** Fallback thunder crack + rumble, used until/unless public/audio/thunder.* loads. */
+  private synthThunder(volume = 1) {
+    if (!this.enabled || !this.ctx || !this.master) return;
+    const ctx = this.ctx;
+    const t = ctx.currentTime;
+    // crack
+    const crack = this.noise(0.25);
+    const hp = ctx.createBiquadFilter();
+    hp.type = "highpass";
+    hp.frequency.value = 900;
+    const cg = ctx.createGain();
+    cg.gain.setValueAtTime(0.7 * volume, t);
+    cg.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+    crack.connect(hp).connect(cg).connect(this.master);
+    crack.start(t);
+    // rumble
+    const rum = this.noise(1.8);
+    const lp = ctx.createBiquadFilter();
+    lp.type = "lowpass";
+    lp.frequency.setValueAtTime(1600, t);
+    lp.frequency.exponentialRampToValueAtTime(90, t + 1.6);
+    const rg = ctx.createGain();
+    rg.gain.setValueAtTime(0.0001, t);
+    rg.gain.exponentialRampToValueAtTime(0.8 * volume, t + 0.05);
+    rg.gain.exponentialRampToValueAtTime(0.0001, t + 1.8);
+    rum.connect(lp).connect(rg).connect(this.master);
+    rum.start(t);
+  }
+}
+
+export const audio = new AudioEngine();
+
+if (typeof window !== "undefined") {
+  fx.thunder.on((v) => audio.play("thunder", v));
+  fx.sfx.on(({ name, volume }) => audio.play(name, volume));
+  window.addEventListener("kaminari:reveal", () => audio.endIntro());
+}
