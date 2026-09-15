@@ -52,3 +52,21 @@ export function IntroCurtain() {
     const lines: Line[] = [];
     const finish = () => {
       document.documentElement.classList.remove("is-intro");
+      setDone(true);
+    };
+
+    const offCut = fx.introCut.on(({ from, to, kind = "slash" }) => {
+      const len = Math.hypot(to.x - from.x, to.y - from.y) || 1;
+      const d = { x: (to.x - from.x) / len, y: (to.y - from.y) / len };
+      lines.push({ p: from, d, kind });
+      const far = Math.max(window.innerWidth, window.innerHeight) * 1.5;
+      const a = { x: from.x - d.x * far, y: from.y - d.y * far };
+      const b = { x: from.x + d.x * far, y: from.y + d.y * far };
+      // the seam: a glow and a white-hot core, drawn in the direction of the slash
+      const svg = svgRef.current;
+      if (svg) {
+        for (const cls of ["intro__seam-glow", "intro__seam-core"].map((c) => `${c} is-${kind}`)) {
+          const l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          l.setAttribute("x1", String(a.x));
+          l.setAttribute("y1", String(a.y));
+          l.setAttribute("x2", String(b.x));
