@@ -70,3 +70,21 @@ export function IntroCurtain() {
           l.setAttribute("x1", String(a.x));
           l.setAttribute("y1", String(a.y));
           l.setAttribute("x2", String(b.x));
+          l.setAttribute("y2", String(b.y));
+          l.setAttribute("class", cls);
+          l.setAttribute("pathLength", "1");
+          svg.appendChild(l);
+          gsap.fromTo(l, { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: kind === "flurry" ? 0.08 : kind === "finisher" ? 0.26 : 0.18, ease: "power3.out" });
+        }
+      }
+      const bolt: BoltRequest =
+        kind === "finisher" ? { from: a, to: b, width: 13, rough: 70, fork: 180 } : kind === "flurry" ? { from: a, to: b, width: 2.5, rough: 22, fork: 50 } : { from: a, to: b, width: 5, rough: 34, fork: 90 };
+      fx.bolt.emit(bolt);
+    });
+
+    const offSplit = fx.introSplit.on(() => {
+      const root = rootRef.current;
+      const sheet = sheetRef.current;
+      if (!root || !sheet) return finish();
+      const W = window.innerWidth;
+      const H = window.innerHeight;
