@@ -88,3 +88,21 @@ export function IntroCurtain() {
       if (!root || !sheet) return finish();
       const W = window.innerWidth;
       const H = window.innerHeight;
+      let pieces: Poly[] = [[[0, 0], [W, 0], [W, H], [0, H]]];
+      // break along the finisher, the opening slashes and a few flurry cuts (dozens of pieces would be too heavy)
+      const flurry = lines.filter((l) => l.kind === "flurry");
+      const cutBy = [...lines.filter((l) => l.kind !== "flurry"), ...flurry.filter((_, i) => i % Math.max(1, Math.ceil(flurry.length / 4)) === 0)];
+      for (const line of cutBy) pieces = pieces.flatMap((poly) => split(poly, line)).filter((p) => p.length >= 3 && area(p) > 40);
+
+      const els = pieces.map((poly) => {
+        const wrap = document.createElement("div");
+        wrap.className = "intro__piece";
+        const inner = document.createElement("div");
+        inner.className = "intro__piece-fill";
+        inner.style.clipPath = `polygon(${poly.map(([x, y]) => `${x}px ${y}px`).join(",")})`;
+        wrap.appendChild(inner);
+        root.insertBefore(wrap, svgRef.current);
+        const cx = poly.reduce((s, v) => s + v[0], 0) / poly.length;
+        const cy = poly.reduce((s, v) => s + v[1], 0) / poly.length;
+        return { wrap, cx, cy };
+      });
