@@ -106,3 +106,49 @@ export function IntroCurtain() {
         const cy = poly.reduce((s, v) => s + v[1], 0) / poly.length;
         return { wrap, cx, cy };
       });
+      sheet.style.display = "none";
+
+      const tl = gsap.timeline({ onComplete: finish });
+      // a hairline crack opens first, then the pieces are thrown off-screen
+      els.forEach(({ wrap, cx, cy }, i) => {
+        const dx = cx - W / 2;
+        const dy = cy - H / 2;
+        const n = Math.hypot(dx, dy) || 1;
+        tl.to(wrap, { x: (dx / n) * 14, y: (dy / n) * 14, duration: 0.18, ease: "power2.out" }, 0);
+        // thrown clear while still solid, fading only at the very end
+        const at = 0.3 + i * 0.02;
+        tl.to(wrap, { x: (dx / n) * W * 0.9, y: (dy / n) * H * 0.7 + H * 0.5, rotation: (Math.random() - 0.5) * 34, duration: 0.75, ease: "power3.in" }, at);
+        tl.to(wrap, { opacity: 0, duration: 0.2, ease: "none" }, at + 0.55);
+      });
+      tl.to(svgRef.current, { opacity: 0, duration: 0.25 }, 0.2);
+    });
+
+    // reduced motion / any path that skips the slashes: just remove the curtain
+    const onReady = () => {
+      if (sheetRef.current?.style.display !== "none") finish();
+    };
+    window.addEventListener("kaminari:ready", onReady);
+
+    return () => {
+      offCut();
+      offSplit();
+      window.removeEventListener("kaminari:ready", onReady);
+    };
+  }, []);
+
+  if (done) return null;
+  return (
+    <div ref={rootRef} className="intro" aria-hidden="true">
+      <div ref={sheetRef} className="intro__piece">
+        <div className="intro__piece-fill" />
+      </div>
+      <svg ref={svgRef} className="intro__seams" width="100%" height="100%">
+        <defs>
+          <filter id="intro-glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="6" />
+          </filter>
+        </defs>
+      </svg>
+    </div>
+  );
+}
