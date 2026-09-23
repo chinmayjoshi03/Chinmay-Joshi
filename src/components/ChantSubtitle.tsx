@@ -34,3 +34,14 @@ export function ChantSubtitle() {
     };
   }, []);
 
+  const c = CHANT[line];
+  return (
+    <div className="chant" aria-live="polite">
+      {c && (
+        <p key={line} className="chant__line">
+          {c.text}
+        </p>
+      )}
+    </div>
+  );
+}
