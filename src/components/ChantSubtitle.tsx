@@ -22,3 +22,15 @@ export function ChantSubtitle() {
 
   useEffect(() => {
     let timers: number[] = [];
+    const off = fx.chant.on(({ ms }) => {
+      timers.forEach(clearTimeout);
+      const k = ms / (CHANT_LENGTH * 1000);
+      timers = CHANT.map((c, i) => window.setTimeout(() => setLine(i), c.at * 1000 * k));
+      timers.push(window.setTimeout(() => setLine(-1), ms + HOLD_MS));
+    });
+    return () => {
+      off();
+      timers.forEach(clearTimeout);
+    };
+  }, []);
+
