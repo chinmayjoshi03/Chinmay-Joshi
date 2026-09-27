@@ -215,3 +215,27 @@ html.is-dragging, html.is-dragging * { user-select: none; cursor: grabbing !impo
 .quest__label { color: var(--volt); }
 .quest__text { font-family: var(--f-display), sans-serif; font-size: clamp(20px, 2.4vw, 28px); line-height: 1.2; }
 .diag { padding: 18px 26px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; color: var(--muted); }
+.diag div { display: flex; justify-content: space-between; gap: 10px; }
+.diag b { color: var(--volt); font-weight: 400; }
+@media (max-width: 520px) { .diag { grid-template-columns: 1fr; } }
+
+/* ── skills ── */
+.skills { padding-block: 0; overflow: hidden; }
+.skills__track { display: flex; gap: clamp(18px, 3vw, 40px); height: 100svh; align-items: center; padding-left: var(--gutter); padding-right: var(--gutter-r); width: max-content; }
+.skills__intro { width: min(420px, 80vw); display: grid; gap: 16px; }
+.form {
+  width: min(460px, 78vw); min-height: 60svh; padding: 34px; display: flex; flex-direction: column; gap: 14px;
+  border: 1px solid var(--line); background: linear-gradient(160deg, #1d1b14, #0f0e0b); position: relative; overflow: hidden;
+}
+.form::after { content: ""; position: absolute; inset: auto 0 0 0; height: 6px; background: repeating-linear-gradient(-55deg, var(--volt) 0 10px, transparent 10px 20px); }
+.form__kanji { position: absolute; right: -10px; top: -30px; font-family: var(--f-display), sans-serif; font-size: 240px; line-height: 1; color: transparent; -webkit-text-stroke: 1.5px #ffd21f55; }
+.form__ordinal { color: var(--volt); }
+.form__name { font-size: clamp(40px, 5vw, 64px); }
+.form__summary { color: var(--muted); font-size: 18px; }
+.form__skills { list-style: none; padding: 0; margin: auto 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.form__skills li { border: 1px solid var(--line); padding: 7px 11px; color: var(--fg); background: #0c0b0988; }
+@media (max-width: 899px) {
+  .skills { padding-block: clamp(96px, 14vw, 160px); }
+  .skills__track { flex-direction: column; height: auto; width: auto; align-items: stretch; }
+  .skills__intro, .form { width: 100%; min-height: 0; }
+}
