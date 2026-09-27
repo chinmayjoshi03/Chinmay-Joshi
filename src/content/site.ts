@@ -122,3 +122,26 @@ export const path: Milestone[] = [
     note: "Built a full social media app in React Native and a WebSocket chat server with presence, ran CI/CD to the Play Store and App Store, and cut app load time by optimizing fetching, caching and rendering.",
   },
   {
+    period: "Aug 2025 — Jun 2026",
+    title: "Web Team Lead",
+    place: "IEEE & ACM, I2IT",
+    note: "Built and deployed a live IEEE conference website, ran the ACM site with a team of five, and mentored students at hackathons.",
+  },
+  {
+    period: "Jun 2025 — Oct 2025",
+    title: "Mobile App Developer Intern",
+    place: "Strmly Technologies",
+    note: "Built 15+ reusable React Native components for a short-video platform, a custom autoplay video player with infinite feed, and end-to-end video upload with compression and progress.",
+  },
+  {
+    period: "May 2025 — Jun 2025",
+    title: "Mobile App Developer Intern",
+    place: "Dhankuber Fintech",
+    note: "Built the financial planner dashboard, onboarding and profile screens in React Native + Expo, with Firebase OTP phone login.",
+  },
+  {
+    period: "2023 — 2027",
+    title: "B.E. Information Technology",
+    place: "I2IT, Pune",
+    note: "CGPA 8.54. Where the training arc started.",
+  },
