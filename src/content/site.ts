@@ -100,3 +100,25 @@ export const missions: Mission[] = [
     summary: "A Go worker pool that catches crashes, restarts its own workers and retries failed tasks, with a live health dashboard.",
     outcome: "Panic recovery · supervisor restarts · exponential backoff",
     stack: ["Go", "Goroutines", "HTTP"],
+    links: [{ label: "Code", href: `${GH}/self-healing-service` }],
+  },
+  {
+    rank: "B",
+    title: "Document Intake Assistant",
+    summary: "A conversational assistant that interviews users to fill a structured document. The LLM proposes updates; deterministic code validates and decides.",
+    outcome: "LLM extraction + rule-based validation",
+    stack: ["Python", "LLMs"],
+    links: [{ label: "Code", href: `${GH}/Document-Intake-Assistant` }],
+  },
+];
+
+export type Milestone = { period: string; title: string; place: string; note: string };
+
+export const path: Milestone[] = [
+  {
+    period: "Nov 2025 — Mar 2026",
+    title: "Software Engineering Intern",
+    place: "GoLaddu Food Products",
+    note: "Built a full social media app in React Native and a WebSocket chat server with presence, ran CI/CD to the Play Store and App Store, and cut app load time by optimizing fetching, caching and rendering.",
+  },
+  {
