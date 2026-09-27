@@ -145,3 +145,25 @@ export const path: Milestone[] = [
     place: "I2IT, Pune",
     note: "CGPA 8.54. Where the training arc started.",
   },
+];
+
+export const contact = {
+  email: "chinmayjoshi003@gmail.com",
+  links: [
+    { label: "GitHub", href: GH },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/chinmayjoshi03" },
+    { label: "Résumé", href: "/resume.pdf" },
+  ],
+};
+
+/** Section order drives the HUD counter and Raikō's anchor points (fractions of the viewport). */
+export const sections = [
+  { id: "hero", kanji: "壱", label: "Sleeper", anchor: { x: 0.8, y: 0.86 } },
+  { id: "about", kanji: "弐", label: "Character", anchor: { x: 0.18, y: 0.88 } },
+  { id: "skills", kanji: "参", label: "Forms", anchor: { x: 0.86, y: 0.9 } },
+  { id: "work", kanji: "肆", label: "Missions", anchor: { x: 0.14, y: 0.9 } },
+  { id: "path", kanji: "伍", label: "Training Arc", anchor: { x: 0.84, y: 0.9 } },
+  { id: "contact", kanji: "陸", label: "Summon", anchor: { x: 0.5, y: 0.93 } }, // the end: bottom centre, bows "Thank you!"
+] as const;
+
+export type SectionId = (typeof sections)[number]["id"];
