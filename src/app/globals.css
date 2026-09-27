@@ -191,3 +191,27 @@ html.is-dragging, html.is-dragging * { user-select: none; cursor: grabbing !impo
   animation: name-charge 5s steps(1) infinite;
 }
 /* the name flickers brighter for an instant, as if a current ran through it */
+@keyframes name-charge { 0%, 100% { filter: none; } 62% { filter: drop-shadow(0 0 22px #ffd21f88) brightness(1.15); } 64% { filter: none; } 66% { filter: drop-shadow(0 0 14px #ffd21f66); } 69% { filter: none; } }
+.hero__role { color: var(--volt); font-size: clamp(12px, 1.4vw, 15px); }
+.hero__cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+
+/* ── about ── */
+.about__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 24px; align-items: start; }
+@media (max-width: 860px) { .about__grid { grid-template-columns: 1fr; } }
+.unit { padding: 26px; display: grid; gap: 12px; }
+.unit__name { font-family: var(--f-display), sans-serif; font-size: clamp(30px, 4vw, 48px); color: var(--volt); line-height: 1.05; margin-block: 4px 8px; }
+.unit__row { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dashed var(--line); padding-bottom: 8px; color: var(--muted); }
+.unit__row b { color: var(--fg); font-weight: 400; text-align: right; }
+.unit__row .is-live { color: var(--volt); }
+.stats { display: grid; gap: 14px; margin-top: 10px; }
+.stat__label { display: flex; justify-content: space-between; color: var(--muted); margin-bottom: 6px; }
+.stat__label b { color: var(--volt); font-variant-numeric: tabular-nums; }
+.stat__track { height: 8px; background: #2a2617; }
+.stat__fill { display: block; height: 100%; background: repeating-linear-gradient(90deg, var(--volt) 0 10px, #e6b800 10px 12px); }
+.about__right { display: grid; gap: 24px; min-width: 0; }
+.bio { padding: 26px; display: grid; gap: 14px; font-size: clamp(17px, 1.6vw, 20px); }
+.bio p { max-width: 60ch; }
+.quest { padding: 20px 26px; display: grid; gap: 6px; }
+.quest__label { color: var(--volt); }
+.quest__text { font-family: var(--f-display), sans-serif; font-size: clamp(20px, 2.4vw, 28px); line-height: 1.2; }
+.diag { padding: 18px 26px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; color: var(--muted); }
