@@ -239,3 +239,23 @@ html.is-dragging, html.is-dragging * { user-select: none; cursor: grabbing !impo
   .skills__track { flex-direction: column; height: auto; width: auto; align-items: stretch; }
   .skills__intro, .form { width: 100%; min-height: 0; }
 }
+
+/* ── work ── */
+.work__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; perspective: 1200px; }
+@media (max-width: 760px) { .work__grid { grid-template-columns: 1fr; } }
+.mission {
+  --rx: 0deg; --ry: 0deg; --mx: 50%;
+  position: relative; padding: 28px; display: flex; flex-direction: column; gap: 14px; min-width: 0;
+  background: linear-gradient(160deg, #1b1913, #0e0d0a); border: 1px solid var(--line);
+  transform: rotateX(var(--rx)) rotateY(var(--ry)); transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.mission::before {
+  content: ""; position: absolute; inset: -1px; pointer-events: none; opacity: 0; transition: opacity 0.25s ease;
+  background: radial-gradient(240px circle at var(--mx) 0%, #ffd21f55, transparent 70%);
+}
+.mission:hover { border-color: var(--volt); box-shadow: 0 0 0 1px var(--volt), 0 0 40px -12px var(--volt); }
+.mission:hover::before { opacity: 1; }
+.mission__top { display: flex; justify-content: space-between; color: var(--muted); }
+.mission__rank { color: var(--ink); background: var(--volt); padding: 2px 8px; }
+.mission[data-rank="S"] .mission__rank { background: var(--ember); }
+.mission__title { font-size: clamp(28px, 3.4vw, 42px); }
