@@ -279,3 +279,23 @@ html.is-dragging, html.is-dragging * { user-select: none; cursor: grabbing !impo
 .milestone__title span { color: var(--muted); font-family: var(--f-body), sans-serif; font-size: 0.6em; }
 .milestone__note { color: var(--muted); max-width: 60ch; }
 
+/* ── contact ── */
+.contact { padding-bottom: 0; }
+.contact__title { font-size: clamp(42px, 8vw, 120px); margin-block: 18px 36px; }
+.contact__title em { font-style: normal; color: var(--volt); }
+.contact__email { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-bottom: 40px; }
+.contact__address { font-family: var(--f-mono), monospace; font-size: clamp(16px, 2.2vw, 26px); user-select: all; overflow-wrap: anywhere; }
+.contact__links { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+.contact__links a {
+  display: flex; justify-content: space-between; align-items: center; text-decoration: none;
+  font-family: var(--f-display), sans-serif; font-size: clamp(30px, 5vw, 64px); padding-block: 18px; border-bottom: 1px solid var(--line);
+  transition: color 0.2s, padding 0.2s, background 0.2s;
+}
+.contact__links a:hover { color: var(--ink); background: var(--volt); padding-inline: 18px; }
+.footer { margin-top: clamp(80px, 10vw, 140px); padding-bottom: max(24px, env(safe-area-inset-bottom)); }
+.marquee { overflow: hidden; border-block: 1px solid var(--line); padding-block: 14px; color: var(--volt); font-size: 14px; }
+.marquee__inner { display: flex; width: max-content; animation: marquee 28s linear infinite; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+.footer__row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding-top: 18px; color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) {
