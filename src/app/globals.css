@@ -299,3 +299,23 @@ html.is-dragging, html.is-dragging * { user-select: none; cursor: grabbing !impo
 .footer__row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding-top: 18px; color: var(--muted); }
 
 @media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+
+/* ── opening chant subtitles: plain movie-style captions ── */
+.chant {
+  position: fixed; left: 0; right: 0; bottom: 8vh; z-index: 62; pointer-events: none;
+  display: flex; justify-content: center; padding: 0 var(--gutter);
+}
+.chant__line {
+  margin: 0; text-align: center;
+  font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif; font-weight: 500;
+  font-size: clamp(15px, 1.5vw, 20px); line-height: 1.35; letter-spacing: 0.01em;
+  color: #fff;
+  text-shadow: 0 1px 2px #000, 0 0 4px #000c;
+  animation: chant-in 0.15s ease-out both;
+}
+@keyframes chant-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .chant__line { animation: none; }
+}
