@@ -12,3 +12,17 @@ import { Work } from "@/sections/Work";
 import { Path } from "@/sections/Path";
 import { Contact } from "@/sections/Contact";
 
+export default function Home() {
+  return (
+    <>
+      <SmoothScroll />
+      <HudNav />
+      <main id="shake-root">
+        <Hero />
+        <About />
+        <Skills />
+        <Work />
+        <Path />
+        <Contact />
+      </main>
+      <IntroCurtain />
