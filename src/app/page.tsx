@@ -26,3 +26,10 @@ export default function Home() {
         <Contact />
       </main>
       <IntroCurtain />
+      <ChantSubtitle />
+      <LightningLayer />
+      <RaikoController />
+      <Loader />
+    </>
+  );
+}
